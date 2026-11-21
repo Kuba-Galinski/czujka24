@@ -1,0 +1,18 @@
+---
+import { adres } from '../config';
+import Base from '../layouts/Base.astro';
+---
+
+<Base tytul="Nie ma takiej strony" opis="Strona o tym adresie nie istnieje.">
+  <section class="czolo">
+    <div class="owijka">
+      <h1>Tej strony nie ma</h1>
+      <p class="wstep">Adres jest błędny albo strona została przeniesiona. Wszystko, co ważne, znajdziesz tutaj:</p>
+      <div class="przyciski">
+        <a class="przycisk" href={adres()}>Strona główna</a>
+        <a class="przycisk przycisk--obrys" href={adres('montaz-czujnikow/')}>Jak zamontować czujniki</a>
+        <a class="przycisk przycisk--obrys" href={adres('wycena/')}>Wycena i kontakt</a>
+      </div>
+    </div>
+  </section>
+</Base>

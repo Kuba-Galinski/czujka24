@@ -1,0 +1,132 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import Kalkulator from '../components/Kalkulator.astro';
+import { firma, linkEmail, linkMessenger, linkTelefon, linkWhatsapp } from '../config';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  tytul="Wycena i kontakt – kalkulator czujek dymu i czadu"
+  opis="Policz orientacyjny koszt czujek dymu i czadu z montażem oraz szkolenia. Dokładna wycena indywidualnie – telefon, formularz, e-mail, WhatsApp."
+>
+  <section class="czolo">
+    <div class="owijka">
+      <h1>Wycena i kontakt</h1>
+      <p class="wstep">
+        Ustaw liczbę czujek, a kalkulator pokaże cenę „od”. Potem wyślij zapytanie albo po prostu zadzwoń –
+        dokładną wycenę przygotowuję indywidualnie.
+      </p>
+    </div>
+  </section>
+
+  <section class="sekcja wycena-kalkulator">
+    <div class="owijka">
+      <Kalkulator />
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka dwie dwie--szeroka-waska">
+      <ContactForm />
+
+      <aside class="kanaly" aria-labelledby="kanaly-tytul">
+        <h2 id="kanaly-tytul">Wolisz porozmawiać?</h2>
+        <ul>
+          <li>
+            <a class="kanaly__telefon" href={linkTelefon}>
+              <Icon nazwa="telefon" rozmiar={28} />
+              {firma.telefonWyswietlany}
+            </a>
+            <p>Najszybsza droga. Jeśli nie odbieram, jestem na montażu albo na akcji – oddzwaniam.</p>
+          </li>
+          <li>
+            <a href={linkWhatsapp} rel="noopener">
+              <Icon nazwa="czat" />
+              Napisz na WhatsAppie
+            </a>
+            <p>Możesz od razu wysłać zdjęcie pomieszczenia albo kotła.</p>
+          </li>
+          {
+            linkMessenger && (
+              <li>
+                <a href={linkMessenger} rel="noopener">
+                  <Icon nazwa="czat" />
+                  Napisz na Messengerze
+                </a>
+              </li>
+            )
+          }
+          <li>
+            <a href={linkEmail}>
+              <Icon nazwa="email" />
+              {firma.email}
+            </a>
+            <p>Dobre dla wspólnot i firm – na zapytania ofertowe i dokumenty.</p>
+          </li>
+          <li>
+            <span class="kanaly__zasieg">
+              <Icon nazwa="pinezka" />
+              Do {firma.zasieg.promienKm} km od miejscowości {firma.zasieg.baza}
+            </span>
+            <p>Województwa {firma.zasieg.wojewodztwa.join(', ')}.</p>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wycena-kalkulator {
+    padding-top: 0;
+  }
+
+  .kanaly {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2rem);
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--sufit);
+  }
+
+  .kanaly h2 {
+    font-size: var(--t-xl);
+  }
+
+  .kanaly ul {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--o-2);
+  }
+
+  .kanaly li {
+    padding-block: var(--o-2);
+    border-top: 1px solid var(--dym);
+  }
+
+  .kanaly li a,
+  .kanaly__zasieg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .kanaly__telefon {
+    font-family: var(--kroj-waski);
+    font-size: var(--t-2xl);
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kanaly li p {
+    margin-top: 0.2rem;
+    font-size: var(--t-s);
+    line-height: 1.45;
+    color: var(--tusz-2);
+  }
+</style>

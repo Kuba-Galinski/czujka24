@@ -1,0 +1,74 @@
+---
+/**
+ * Miejsce na zdjęcie z folderu public/img/.
+ * Gdy pliku jeszcze nie ma: w wersji roboczej widać zakreskowaną ramkę z nazwą pliku,
+ * a po publikacji – nic (strona nie pokazuje pustych ramek).
+ * Prompty do wygenerowania zdjęć: docs/prompty-gemini.md
+ */
+import { existsSync } from 'node:fs';
+import { adres, firma } from '../config';
+
+interface Props {
+  plik: string;
+  alt: string;
+  szer: number;
+  wys: number;
+  pilne?: boolean;
+}
+
+const { plik, alt, szer, wys, pilne = false } = Astro.props;
+const jest = existsSync(`public/img/${plik}`);
+---
+
+{
+  jest ? (
+    <img
+      class="zdjecie"
+      src={adres(`img/${plik}`)}
+      alt={alt}
+      width={szer}
+      height={wys}
+      loading={pilne ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  ) : firma.wersjaRobocza ? (
+    <div class="zdjecie zdjecie--puste" style={`aspect-ratio:${szer}/${wys}`} role="img" aria-label={`Miejsce na zdjęcie: ${alt}`}>
+      <p>
+        Miejsce na zdjęcie
+        <br />
+        <code>public/img/{plik}</code>
+        <br />
+        {szer} × {wys} px
+      </p>
+    </div>
+  ) : null
+}
+
+<style>
+  .zdjecie {
+    width: 100%;
+    height: auto;
+    border: var(--linia);
+    border-radius: var(--r);
+    object-fit: cover;
+  }
+
+  .zdjecie--puste {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    text-align: center;
+    font-size: var(--t-xs);
+    line-height: 1.5;
+    color: var(--tusz-2);
+    border-style: dashed;
+    background: repeating-linear-gradient(135deg, transparent 0 14px, rgb(23 33 43 / 0.05) 14px 15px), var(--papier);
+  }
+
+  .zdjecie--puste code {
+    font-family: inherit;
+    font-weight: 700;
+    color: var(--tusz);
+    overflow-wrap: anywhere;
+  }
+</style>

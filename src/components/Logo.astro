@@ -1,0 +1,58 @@
+---
+/** Znak roboczy: czujka widziana od dołu (krążek, kratka wlotu, czerwona dioda) + nazwa.
+    Docelowy logotyp można podmienić po wygenerowaniu wg docs/prompty-gemini.md. */
+import { adres, firma } from '../config';
+interface Props {
+  jasne?: boolean;
+}
+const { jasne = false } = Astro.props;
+---
+
+<a class:list={['logo', { 'logo--jasne': jasne }]} href={adres()} aria-label={`${firma.marka} – strona główna`}>
+  <svg class="logo__znak" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+    <circle cx="20" cy="20" r="18" fill="var(--logo-tlo)" stroke="var(--logo-kreska)" stroke-width="2.5"></circle>
+    <circle cx="20" cy="20" r="10.5" fill="none" stroke="var(--logo-kreska)" stroke-width="2" stroke-dasharray="4.200 2.400"
+    ></circle>
+    <circle cx="20" cy="20" r="3.600" fill="#c5221f"></circle>
+  </svg>
+  <span class="logo__napis">czujka24</span>
+</a>
+
+<style>
+  .logo {
+    --logo-tlo: #fff;
+    --logo-kreska: var(--tusz);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    color: var(--tusz);
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    color: var(--tusz);
+  }
+
+  .logo--jasne {
+    --logo-tlo: transparent;
+    --logo-kreska: #fff;
+    color: #fff;
+  }
+
+  .logo--jasne:hover {
+    color: #fff;
+  }
+
+  .logo__znak {
+    flex: none;
+  }
+
+  .logo__napis {
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: 1.85rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+</style>

@@ -1,0 +1,246 @@
+---
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import { adres, firma, linkEmail, linkTelefon } from '../config';
+import { cennik } from '../data/cennik';
+import Base from '../layouts/Base.astro';
+
+const etapy = [
+  {
+    tytul: 'Rozmowa z zarządem lub administratorem',
+    opis: 'Ustalamy liczbę lokali, układ klatek i to, czym ogrzewane są mieszkania: sieć, kotły gazowe, piecyki łazienkowe, piece.',
+  },
+  {
+    tytul: 'Oferta gotowa na zebranie',
+    opis: 'Dostajecie jedną kartkę: koszt na lokal, koszt całości i warianty rozliczenia. Mogę ją przedstawić mieszkańcom osobiście.',
+  },
+  {
+    tytul: 'Lista lokali i terminy',
+    opis: 'Mieszkańcy zapisują się na dogodne godziny – także po południu i w sobotę. Ogłoszenia na klatki przygotowuję we własnym zakresie.',
+  },
+  {
+    tytul: 'Montaż klatka po klatce',
+    opis: 'W każdym lokalu dobieram miejsce, montuję czujki, testuję alarm przy domowniku i zostawiam krótką instrukcję.',
+  },
+  {
+    tytul: 'Protokół dla zarządu',
+    opis: 'Zestawienie lokali z datą montażu, modelem i liczbą czujek oraz lista mieszkań, do których nie udało się wejść.',
+  },
+  {
+    tytul: 'Spotkanie z mieszkańcami',
+    opis: 'Godzinne szkolenie: co robić, gdy czujka zadziała u mnie, a co, gdy słychać ją zza ściany sąsiada.',
+  },
+];
+---
+
+<Base
+  tytul="Czujki dymu i czadu dla wspólnot i spółdzielni mieszkaniowych"
+  opis="Montaż czujek dymu i czadu w całym budynku przed 1 stycznia 2030 r.: jedna wycena, montaż klatka po klatce, protokół dla zarządu i szkolenie mieszkańców."
+>
+  <section class="czolo">
+    <div class="owijka dwie dwie--szeroka-waska">
+      <div>
+        <h1>Cały budynek z czujkami przed 2030 rokiem</h1>
+        <p class="wstep">
+          Od 1 stycznia 2030 r. czujka dymu ma być w każdym mieszkaniu. Wspólnota nie musi czekać, aż każdy lokator
+          załatwi to sam: jedna wycena, jeden termin, jeden protokół.
+        </p>
+        <div class="przyciski">
+          <a class="przycisk" href={adres('wycena/?dla=wspolnota')}>
+            <Icon nazwa="kalkulator" />
+            Policz koszt dla budynku
+          </a>
+          <a class="przycisk przycisk--obrys" href={linkTelefon}>
+            <Icon nazwa="telefon" />
+            {firma.telefonWyswietlany}
+          </a>
+        </div>
+      </div>
+      <Photo plik="blok.webp" alt="Klatka schodowa w bloku mieszkalnym" szer={960} wys={1200} pilne />
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka dwie">
+      <div class="proza">
+        <h2>Dlaczego warto zrobić to wspólnie</h2>
+        <p>
+          Pożar w jednym mieszkaniu to zadymiona klatka dla wszystkich. Czujka u sąsiada z parteru chroni także
+          rodzinę z czwartego piętra – pod warunkiem, że tam jest.
+        </p>
+        <p>
+          Gdy każdy kupuje sam, część lokali zostaje bez czujek, a część z urządzeniami bez certyfikatu. Montaż
+          zorganizowany przez wspólnotę zamyka temat za jednym razem.
+        </p>
+      </div>
+      <ul class="lista korzysci">
+        <li>
+          <strong>Niższa cena.</strong>{' '}
+          Rabat rośnie z liczbą czujek: {
+            cennik.rabaty.map((r) => `${r.procent}% od ${r.odSztuk} sztuk`).join(', ')
+          }{cennik.przykladowe && ' (progi przykładowe)'}.
+        </li>
+        <li>
+          <strong>Ten sam sprzęt w całym budynku.</strong>{' '}
+          Jeden model, jedna instrukcja, ta sama data wymiany.
+        </li>
+        <li>
+          <strong>Porządek w dokumentach.</strong>{' '}
+          Zarząd wie, w których lokalach czujki są, a w których ich jeszcze brakuje.
+        </li>
+        <li>
+          <strong>Pomoc dla starszych mieszkańców.</strong>{' '}
+          Nikt nie musi wchodzić na drabinę ani wybierać czujki w sklepie.
+        </li>
+        <li>
+          <strong>Mieszkańcy wiedzą, co robić.</strong>{' '}
+          Montaż kończy się spotkaniem, a nie kartką na tablicy ogłoszeń.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Od pierwszej rozmowy do protokołu</h2>
+        <p>Sześć etapów. Tempo zależy od liczby lokali i od tego, jak szybko mieszkańcy wybiorą terminy.</p>
+      </div>
+      <ol class="etapy">
+        {
+          etapy.map((e) => (
+            <li>
+              <h3>{e.tytul}</h3>
+              <p>{e.opis}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka dwie">
+      <div class="proza">
+        <h2>Które lokale potrzebują czujki czadu</h2>
+        <p>
+          Czujka dymu trafia do każdego mieszkania. Czujka czadu jest wymagana w pomieszczeniach, w których spala
+          się paliwo stałe, ciekłe lub gazowe.
+        </p>
+        <ul class="lista">
+          <li>mieszkania z kotłem gazowym lub piecykiem łazienkowym</li>
+          <li>lokale z piecem kaflowym, kozą lub kominkiem</li>
+          <li>kotłownie i pomieszczenia z podgrzewaczami wody</li>
+        </ul>
+        <p>
+          W budynku ogrzewanym z sieci, z kuchenkami elektrycznymi, wystarczą zwykle same czujki dymu. Sprawdzam to
+          na etapie oferty – lokal po lokalu.
+        </p>
+      </div>
+      <div class="proza">
+        <h2>Kto płaci</h2>
+        <p>
+          To decyzja wspólnoty. Ofertę przygotowuję w trzech wariantach, żeby zarząd miał z czym pójść na zebranie:
+        </p>
+        <ul class="lista">
+          <li>całość ze środków wspólnoty lub spółdzielni</li>
+          <li>czujki kupują mieszkańcy, montaż i szkolenie finansuje wspólnota</li>
+          <li>każdy lokal płaci za siebie, ale po cenie hurtowej</li>
+        </ul>
+        <p class="przypis">
+          Nie rozstrzygam, na kim ciąży obowiązek w konkretnym budynku – to zależy od tytułów prawnych do lokali.
+          W razie wątpliwości warto zapytać prawnika wspólnoty lub komendę PSP.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--granat">
+    <div class="owijka koniec">
+      <h2>Poproś o ofertę na najbliższe zebranie</h2>
+      <p class="wstep">
+        Wystarczy liczba lokali i informacja, czym ogrzewany jest budynek. Ofertę odsyłam mailem, a na zebranie
+        mogę przyjechać osobiście.
+      </p>
+      <div class="przyciski">
+        <a class="przycisk" href={adres('wycena/?dla=wspolnota')}>Policz koszt dla budynku</a>
+        <a class="przycisk przycisk--obrys" href={linkEmail}>
+          <Icon nazwa="email" />
+          {firma.email}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .korzysci {
+    gap: 0;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .korzysci li {
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .korzysci li::before {
+    top: calc(1rem + 0.42em);
+  }
+
+  .etapy {
+    list-style: none;
+    padding: 0;
+    counter-reset: etap;
+    display: grid;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .etapy li {
+    counter-increment: etap;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    column-gap: var(--o-2);
+    padding-block: var(--o-3);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .etapy li::before {
+    content: counter(etap);
+    grid-row: 1 / span 2;
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: var(--t-2xl);
+    line-height: 0.9;
+    color: var(--czerwien);
+  }
+
+  .etapy h3 {
+    font-size: var(--t-l);
+  }
+
+  .etapy p {
+    margin-top: 0.35rem;
+    color: var(--tusz-2);
+    max-width: 36rem;
+  }
+
+  @media (min-width: 56rem) {
+    .etapy {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--o-5);
+      border-top: 0;
+    }
+
+    .etapy li {
+      border-top: 2px solid var(--tusz);
+      border-bottom: 0;
+    }
+  }
+
+  .koniec {
+    display: grid;
+    gap: var(--o-3);
+    justify-items: start;
+  }
+</style>

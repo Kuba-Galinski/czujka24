@@ -1,0 +1,382 @@
+---
+/**
+ * Formularz zapytania.
+ *  - Z kluczem Web3Forms (src/config.ts → web3formsKlucz) wysyła wiadomość w tle.
+ *  - Bez klucza otwiera gotową wiadomość w programie pocztowym klienta.
+ * Błędy pokazują się pod polami i w podsumowaniu nad formularzem.
+ */
+import { adres, firma } from '../config';
+---
+
+<form
+  class="formularz"
+  id="zapytanie"
+  novalidate
+  data-formularz
+  data-klucz={firma.web3formsKlucz}
+  data-email={firma.email}
+  aria-labelledby="formularz-tytul"
+>
+  <h2 id="formularz-tytul">Wyślij zapytanie</h2>
+  <p class="formularz__wstep">Napisz, czego potrzebujesz. Odezwę się telefonicznie albo mailowo.</p>
+
+  <div class="formularz__bledy" role="alert" tabindex="-1" hidden data-bledy>
+    <h3>Popraw formularz</h3>
+    <ul></ul>
+  </div>
+
+  <div class="pole">
+    <label for="f-imie">Imię i nazwisko lub nazwa</label>
+    <input id="f-imie" name="imie" type="text" autocomplete="name" required aria-describedby="f-imie-blad" />
+    <p class="pole__blad" id="f-imie-blad" hidden></p>
+  </div>
+
+  <div class="formularz__dwa">
+    <div class="pole">
+      <label for="f-telefon">Telefon</label>
+      <input id="f-telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="f-telefon-blad f-kontakt-opis" />
+      <p class="pole__blad" id="f-telefon-blad" hidden></p>
+    </div>
+    <div class="pole">
+      <label for="f-email">E-mail</label>
+      <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="f-email-blad f-kontakt-opis" />
+      <p class="pole__blad" id="f-email-blad" hidden></p>
+    </div>
+  </div>
+  <p class="przypis" id="f-kontakt-opis">Wystarczy jedno z dwóch: telefon albo e-mail.</p>
+
+  <div class="pole">
+    <label for="f-miejscowosc">Miejscowość</label>
+    <input id="f-miejscowosc" name="miejscowosc" type="text" autocomplete="address-level2" aria-describedby="f-miejscowosc-opis" />
+    <p class="przypis" id="f-miejscowosc-opis">Pozwala od razu policzyć dojazd.</p>
+  </div>
+
+  <div class="pole">
+    <label for="f-wiadomosc">Wiadomość</label>
+    <textarea id="f-wiadomosc" name="wiadomosc" rows="7" required aria-describedby="f-wiadomosc-blad"></textarea>
+    <p class="pole__blad" id="f-wiadomosc-blad" hidden></p>
+  </div>
+
+  <div class="pole pole--zgoda">
+    <label class="zgoda" for="f-zgoda">
+      <input id="f-zgoda" name="zgoda" type="checkbox" required aria-describedby="f-zgoda-blad" />
+      <span>
+        Zgadzam się na kontakt w sprawie tego zapytania. Dane służą wyłącznie do odpowiedzi – szczegóły
+        w&nbsp;<a href={adres('polityka-prywatnosci/')}>polityce prywatności</a>.
+      </span>
+    </label>
+    <p class="pole__blad" id="f-zgoda-blad" hidden></p>
+  </div>
+
+  <!-- pułapka na boty: pole niewidoczne dla ludzi -->
+  <div class="formularz__pulapka" aria-hidden="true">
+    <label for="f-strona">Strona www</label>
+    <input id="f-strona" name="botcheck" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="formularz__dol">
+    <button class="przycisk" type="submit" data-wyslij>Wyślij zapytanie</button>
+    <p class="formularz__stan" role="status" aria-live="polite" data-stan></p>
+  </div>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-formularz]').forEach((formularz) => {
+    const klucz = formularz.dataset.klucz ?? '';
+    const adresat = formularz.dataset.email ?? '';
+    const bledy = formularz.querySelector<HTMLElement>('[data-bledy]')!;
+    const listaBledow = bledy.querySelector('ul')!;
+    const stan = formularz.querySelector<HTMLElement>('[data-stan]')!;
+    const przycisk = formularz.querySelector<HTMLButtonElement>('[data-wyslij]')!;
+
+    const pole = <T extends HTMLElement = HTMLInputElement>(nazwa: string) =>
+      formularz.elements.namedItem(nazwa) as unknown as T;
+    const imie = pole('imie');
+    const telefon = pole('telefon');
+    const email = pole('email');
+    const miejscowosc = pole('miejscowosc');
+    const wiadomosc = pole<HTMLTextAreaElement>('wiadomosc');
+    const zgoda = pole('zgoda');
+    const pulapka = pole('botcheck');
+
+    const reguly: [HTMLInputElement | HTMLTextAreaElement, () => string][] = [
+      [imie, () => (imie.value.trim() ? '' : 'Wpisz imię i nazwisko albo nazwę firmy lub wspólnoty.')],
+      [
+        telefon,
+        () => {
+          const t = telefon.value.trim();
+          if (!t && !email.value.trim()) return 'Podaj telefon albo e-mail, żeby dało się odpowiedzieć.';
+          if (t && t.replace(/\D/g, '').length < 9) return 'Numer telefonu powinien mieć co najmniej 9 cyfr.';
+          return '';
+        },
+      ],
+      [
+        email,
+        () => {
+          const e = email.value.trim();
+          if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) return 'Sprawdź adres e-mail – wygląda na niepełny.';
+          return '';
+        },
+      ],
+      [wiadomosc, () => (wiadomosc.value.trim() ? '' : 'Napisz w kilku słowach, czego dotyczy zapytanie.')],
+      [zgoda, () => (zgoda.checked ? '' : 'Zaznacz zgodę na kontakt – bez niej nie mogę odpowiedzieć.')],
+    ];
+
+    const pokazBlad = (el: HTMLInputElement | HTMLTextAreaElement, tekst: string) => {
+      const miejsce = formularz.querySelector<HTMLElement>(`#${el.id}-blad`);
+      if (!miejsce) return;
+      miejsce.textContent = tekst;
+      miejsce.hidden = !tekst;
+      el.setAttribute('aria-invalid', tekst ? 'true' : 'false');
+    };
+
+    const sprawdz = (el: HTMLInputElement | HTMLTextAreaElement) => {
+      const regula = reguly.find(([p]) => p === el);
+      const tekst = regula ? regula[1]() : '';
+      pokazBlad(el, tekst);
+      return tekst;
+    };
+
+    reguly.forEach(([el]) => {
+      el.addEventListener('blur', () => {
+        sprawdz(el);
+        if (el === email) sprawdz(telefon);
+      });
+      el.addEventListener('input', () => {
+        if (el.getAttribute('aria-invalid') === 'true') sprawdz(el);
+      });
+    });
+
+    const tresc = () =>
+      [
+        `Imię i nazwisko / nazwa: ${imie.value.trim()}`,
+        `Telefon: ${telefon.value.trim() || '–'}`,
+        `E-mail: ${email.value.trim() || '–'}`,
+        `Miejscowość: ${miejscowosc.value.trim() || '–'}`,
+        '',
+        wiadomosc.value.trim(),
+      ].join('\n');
+
+    formularz.addEventListener('submit', async (zdarzenie) => {
+      zdarzenie.preventDefault();
+      stan.textContent = '';
+      stan.dataset.rodzaj = '';
+
+      const znalezione = reguly.map(([el]) => [el, sprawdz(el)] as const).filter(([, tekst]) => tekst);
+      listaBledow.replaceChildren(
+        ...znalezione.map(([el, tekst]) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${el.id}`;
+          a.textContent = tekst;
+          a.addEventListener('click', (klik) => {
+            klik.preventDefault();
+            el.focus();
+          });
+          li.append(a);
+          return li;
+        }),
+      );
+      bledy.hidden = znalezione.length === 0;
+      if (znalezione.length) {
+        bledy.focus();
+        return;
+      }
+
+      if (pulapka.value) return; // bot
+
+      const temat = `Zapytanie ze strony czujka24 – ${imie.value.trim()}`;
+
+      if (!klucz) {
+        location.href = `mailto:${adresat}?subject=${encodeURIComponent(temat)}&body=${encodeURIComponent(tresc())}`;
+        stan.dataset.rodzaj = 'ok';
+        stan.textContent =
+          'Gotowa wiadomość czeka w Twoim programie pocztowym – wyślij ją stamtąd. Jeśli nic się nie otworzyło, zadzwoń albo napisz na WhatsAppie.';
+        return;
+      }
+
+      przycisk.disabled = true;
+      przycisk.textContent = 'Wysyłanie…';
+      try {
+        const odpowiedz = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: klucz,
+            subject: temat,
+            from_name: 'czujka24.pl',
+            replyto: email.value.trim() || undefined,
+            'Imię i nazwisko / nazwa': imie.value.trim(),
+            Telefon: telefon.value.trim(),
+            'E-mail': email.value.trim(),
+            Miejscowość: miejscowosc.value.trim(),
+            Wiadomość: wiadomosc.value.trim(),
+          }),
+        });
+        const wynik = await odpowiedz.json();
+        if (!odpowiedz.ok || !wynik.success) throw new Error(wynik.message ?? 'Błąd wysyłki');
+        formularz.reset();
+        stan.dataset.rodzaj = 'ok';
+        stan.textContent = 'Zapytanie wysłane. Odezwę się telefonicznie albo mailowo.';
+      } catch {
+        stan.dataset.rodzaj = 'blad';
+        stan.textContent =
+          'Zapytanie nie zostało wysłane – serwer formularza nie odpowiedział. Spróbuj ponownie za chwilę albo zadzwoń.';
+      } finally {
+        przycisk.disabled = false;
+        przycisk.textContent = 'Wyślij zapytanie';
+      }
+    });
+  });
+</script>
+
+<style>
+  .formularz {
+    display: grid;
+    gap: var(--o-3);
+    scroll-margin-top: 6rem;
+  }
+
+  .formularz h2 {
+    font-size: var(--t-xl);
+  }
+
+  .formularz__wstep {
+    margin-top: -0.75rem;
+    color: var(--tusz-2);
+  }
+
+  .formularz__dwa {
+    display: grid;
+    gap: var(--o-3);
+  }
+
+  .formularz__dwa + .przypis {
+    margin-top: -1rem;
+  }
+
+  @media (min-width: 34rem) {
+    .formularz__dwa {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .pole {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+
+  .pole > label {
+    font-weight: 700;
+  }
+
+  .pole input:not([type='checkbox']),
+  .pole textarea {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.7rem 0.9rem;
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--papier);
+    color: var(--tusz);
+    font: inherit;
+  }
+
+  .pole textarea {
+    resize: vertical;
+    line-height: 1.45;
+  }
+
+  .pole [aria-invalid='true'] {
+    border-color: var(--czerwien);
+    box-shadow: inset 0 0 0 1px var(--czerwien);
+  }
+
+  .pole__blad {
+    font-size: var(--t-s);
+    font-weight: 600;
+    color: var(--czerwien-ciemna);
+  }
+
+  .zgoda {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: var(--t-s);
+    line-height: 1.45;
+    cursor: pointer;
+  }
+
+  .zgoda input {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.1rem 0 0;
+    accent-color: var(--granat);
+    cursor: pointer;
+  }
+
+  .formularz__bledy {
+    padding: 1rem 1.15rem;
+    border: 2px solid var(--czerwien);
+    border-radius: var(--r);
+    background: var(--ostrzezenie-tlo);
+  }
+
+  .formularz__bledy h3 {
+    font-size: var(--t-l);
+    margin-bottom: 0.4rem;
+  }
+
+  .formularz__bledy ul {
+    padding-left: 1.2rem;
+    font-size: var(--t-s);
+  }
+
+  .formularz__bledy :global(a) {
+    color: var(--czerwien-ciemna);
+    font-weight: 600;
+  }
+
+  .formularz__pulapka {
+    position: absolute;
+    left: -200vw;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .formularz__dol {
+    display: grid;
+    gap: var(--o-2);
+    justify-items: start;
+  }
+
+  .formularz__dol .przycisk:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .formularz__stan:empty {
+    display: none;
+  }
+
+  .formularz__stan {
+    padding: 0.8rem 1rem;
+    border-radius: var(--r);
+    font-size: var(--t-s);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .formularz__stan[data-rodzaj='ok'] {
+    background: var(--lcd-tlo);
+    color: #0f4a3d;
+  }
+
+  .formularz__stan[data-rodzaj='blad'] {
+    background: var(--ostrzezenie-tlo);
+    color: var(--czerwien-ciemna);
+  }
+</style>

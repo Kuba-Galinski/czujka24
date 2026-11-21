@@ -1,0 +1,647 @@
+---
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import { adres, firma, linkTelefon } from '../config';
+import Base from '../layouts/Base.astro';
+
+const krokiDym = [
+  {
+    tytul: 'Wybierz pomieszczenia',
+    opis: 'Zacznij od korytarza przy sypialniach. Potem sypialnie, pokoje dzieci i salon. W domu piętrowym – co najmniej jedna czujka na każdej kondygnacji, także przy schodach.',
+  },
+  {
+    tytul: 'Znajdź miejsce na suficie',
+    opis: 'Najlepszy jest środek płaskiego sufitu. Trzymaj się z dala od ścian, narożników i lamp – producenci podają zwykle minimum 30–50 cm.',
+  },
+  {
+    tytul: 'Przykręć podstawę',
+    opis: 'Dwa kołki i dwa wkręty z zestawu. Taśma klejąca trzyma słabiej i odpada po kilku sezonach grzewczych – jeśli już, to tylko ta dołączona przez producenta.',
+  },
+  {
+    tytul: 'Uruchom i załóż czujkę',
+    opis: 'Wyjmij zabezpieczenie baterii albo włóż baterię, a potem wkręć czujkę w podstawę, aż kliknie.',
+  },
+  {
+    tytul: 'Zrób test',
+    opis: 'Przytrzymaj przycisk TEST do sygnału. Sprawdź przy zamkniętych drzwiach, czy alarm słychać w sypialni.',
+  },
+];
+
+const krokiCzad = [
+  {
+    tytul: 'Policz źródła czadu',
+    opis: 'Kocioł gazowy, piecyk łazienkowy, kuchenka gazowa, kominek, piec kaflowy, koza. Każde pomieszczenie z takim urządzeniem potrzebuje własnej czujki.',
+  },
+  {
+    tytul: 'Zaznacz miejsce na ścianie',
+    opis: 'Wysokość 1,5–1,9 m nad podłogą, czyli mniej więcej na poziomie oczu. Od urządzenia 1–3 m w poziomie.',
+  },
+  {
+    tytul: 'Sprawdź otoczenie',
+    opis: 'Nie przy oknie, drzwiach, wentylatorze ani kratce wentylacyjnej. Nie za zasłoną i nie we wnęce za meblami.',
+  },
+  {
+    tytul: 'Zamontuj i uruchom',
+    opis: 'Przykręć czujkę do ściany i włącz zgodnie z instrukcją. Większość modeli przez chwilę się kalibruje.',
+  },
+  {
+    tytul: 'Pomyśl o sypialni',
+    opis: 'Druga czujka przy łóżku, na wysokości 70–100 cm, obudzi Cię, gdy czad dotrze do sypialni z innego pomieszczenia.',
+  },
+];
+
+const alarmDym = [
+  'Obudź wszystkich domowników. Nie zbieraj rzeczy.',
+  'Jeśli pali się coś małego, a wyjście masz za plecami – użyj gaśnicy lub koca gaśniczego. Jeśli nie – nie gaś.',
+  'Wyjdźcie z mieszkania i zamknij za sobą drzwi, nie na klucz. Zamknięte drzwi wstrzymują ogień i dym.',
+  'Schodź schodami. Nigdy windą.',
+  'Z bezpiecznego miejsca zadzwoń pod 112.',
+  'Nie wracaj do środka, dopóki strażacy na to nie pozwolą.',
+];
+
+const alarmCzad = [
+  'Otwórz szeroko okna i drzwi.',
+  'Wyprowadź wszystkich na świeże powietrze – także tych, którzy „czują się dobrze”.',
+  'Jeśli da się to zrobić po drodze, wyłącz kocioł lub piecyk.',
+  'Zadzwoń pod 112. Powiedz o bólu głowy, zawrotach, nudnościach lub senności.',
+  'Nie wracaj, dopóki strażacy nie zmierzą stężenia czadu.',
+  'Przed ponownym uruchomieniem urządzenia wezwij serwis i kominiarza.',
+];
+
+const ochrona = [
+  {
+    tytul: 'Gaśnica proszkowa',
+    opis: 'Do domu wystarczy gaśnica 2 kg z oznaczeniem ABC. Powieś ją przy wyjściu, nie w głębi kuchni – tak, żeby sięgając po nią, mieć drogę ucieczki za plecami.',
+  },
+  {
+    tytul: 'Koc gaśniczy',
+    opis: 'Najprostszy sposób na płonącą patelnię. Wisi w kuchni w zasięgu ręki, ale nie nad samą kuchenką.',
+  },
+  {
+    tytul: 'Czujnik gazu',
+    opis: 'To inne urządzenie niż czujka czadu. Czujnik gazu ziemnego montuje się pod sufitem, a czujnik gazu z butli (LPG) tuż nad podłogą.',
+  },
+  {
+    tytul: 'Kominiarz i drożna wentylacja',
+    opis: 'Przegląd przewodów kominowych co najmniej raz w roku. Kratek wentylacyjnych nie zaklejaj nawet zimą – to przez nie ucieka czad.',
+  },
+  {
+    tytul: 'Ładowanie pod nadzorem',
+    opis: 'Hulajnogę, rower elektryczny i powerbanki ładuj w dzień i nie na drodze do wyjścia. Listwy zasilającej nie łącz z kolejną listwą.',
+  },
+  {
+    tytul: 'Plan ewakuacji rodziny',
+    opis: 'Ustalcie dwie drogi wyjścia i miejsce zbiórki przed domem. Dzieci powinny wiedzieć, że przy alarmie nie wolno chować się pod łóżkiem ani w szafie.',
+  },
+];
+---
+
+<Base
+  tytul="Jak zamontować czujkę dymu i czujkę czadu – poradnik strażaka"
+  opis="Gdzie i jak zamontować czujkę dymu oraz czujkę tlenku węgla: miejsca, wysokości, odległości, test i konserwacja. Co robić, gdy zadziała alarm."
+>
+  <section class="czolo">
+    <div class="owijka">
+      <h1>Jak zamontować czujniki dymu i czadu</h1>
+      <p class="wstep">
+        Czujkę dymu zamontujesz w kwadrans, mając wiertarkę i dwa kołki. Ważniejsze od narzędzi jest miejsce:
+        źle powieszona czujka zadziała za późno albo będzie alarmować przy każdym gotowaniu.
+      </p>
+      <nav class="spis" aria-label="Na tej stronie">
+        <a href="#czujka-dymu">Czujka dymu</a>
+        <a href="#czujka-czadu">Czujka czadu</a>
+        <a href="#po-montazu">Test i konserwacja</a>
+        <a href="#alarm">Gdy zadziała alarm</a>
+        <a href="#ochrona-domu">Gaśnica, koc i reszta</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier" id="czujka-dymu">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Czujka dymu: na suficie, pośrodku</h2>
+        <p>
+          Dym jest gorący, więc idzie prosto do góry i rozlewa się pod sufitem. W narożnikach zostaje poduszka
+          nieruchomego powietrza, do której dociera na końcu.
+        </p>
+      </div>
+
+      <div class="dwie dwie--szeroka-waska">
+        <figure class="schemat arkusz">
+          <svg viewBox="0 0 560 330" role="img" aria-labelledby="schemat-dym-tytul">
+            <title id="schemat-dym-tytul">
+              Przekrój pokoju: czujka dymu na środku sufitu, z dala od narożników, w których powietrze stoi
+            </title>
+            <!-- martwe strefy w narożnikach -->
+            <g fill="var(--ostrzezenie-tlo)" stroke="var(--czerwien)" stroke-width="1.5" stroke-dasharray="4 3">
+              <path d="M44 54H124L44 134Z"></path>
+              <path d="M516 54H436L516 134Z"></path>
+            </g>
+            <!-- pokój -->
+            <path d="M40 290V50H520V290" fill="none" stroke="var(--tusz)" stroke-width="8" stroke-linejoin="miter"></path>
+            <path d="M20 292H540" stroke="var(--tusz)" stroke-width="4"></path>
+            <!-- dym: słup nad źródłem i warstwa pod sufitem -->
+            <path
+              d="M328 268C322 220 312 170 308 130C305 104 290 84 250 82H136V56H424V82H410C380 84 366 104 363 130C359 170 356 220 352 268Z"
+              fill="var(--dym-jasny)"
+            ></path>
+            <!-- źródło -->
+            <rect x="312" y="268" width="56" height="20" fill="var(--dym-jasny)" stroke="var(--tusz)" stroke-width="2"></rect>
+            <!-- czujka -->
+            <path d="M252 54H308V62A8 8 0 0 1 300 70H260A8 8 0 0 1 252 62Z" fill="var(--papier)" stroke="var(--tusz)" stroke-width="2.500"
+            ></path>
+            <circle cx="280" cy="63" r="3" fill="var(--czerwien)"></circle>
+            <!-- wymiar: odległość od ściany -->
+            <g stroke="var(--tusz)" stroke-width="1.5" fill="none">
+              <path d="M44 186H124M44 178V194M124 178V194"></path>
+              <path d="M436 186H516M436 178V194M516 178V194"></path>
+            </g>
+            <text class="schemat__nie" x="52" y="160">nie tu</text>
+            <text class="schemat__nie" x="508" y="160" text-anchor="end">nie tu</text>
+            <text class="schemat__wymiar" x="52" y="218">30–50 cm</text>
+            <text class="schemat__wymiar" x="508" y="218" text-anchor="end">30–50 cm</text>
+            <text class="schemat__tak" x="280" y="100" text-anchor="middle">tu</text>
+          </svg>
+          <figcaption>
+            Przekrój pokoju. Czerwone trójkąty to martwe strefy w narożnikach – dym trafia tam najpóźniej.
+          </figcaption>
+        </figure>
+
+        <div class="reguly">
+          <h3>Gdzie nie montować</h3>
+          <ul class="lista lista--nie">
+            <li>w kuchni nad kuchenką i w łazience – opary i para dają fałszywe alarmy</li>
+            <li>w narożniku i na styku ściany z sufitem</li>
+            <li>przy lampie, wentylatorze, klimatyzatorze i kratce wentylacyjnej</li>
+            <li>na ścianie nad drzwiami, jeśli da się na suficie</li>
+          </ul>
+          <h3>Sufit skośny</h3>
+          <p>
+            Czujkę montuje się blisko najwyższego punktu: do 90 cm od szczytu, licząc w poziomie, ale nie w samym
+            wierzchołku.
+          </p>
+        </div>
+      </div>
+
+      <ol class="kroki">
+        {
+          krokiDym.map((k) => (
+            <li>
+              <h3>{k.tytul}</h3>
+              <p>{k.opis}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="sekcja" id="czujka-czadu">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Czujka czadu: na ścianie, na wysokości oczu</h2>
+        <p>
+          Tlenek węgla nie ma zapachu ani koloru i miesza się z powietrzem w całym pomieszczeniu. Dlatego czujki
+          czadu nie wiesza się na suficie, tylko tam, gdzie oddychasz.
+        </p>
+      </div>
+
+      <div class="dwie dwie--szeroka-waska">
+        <figure class="schemat arkusz">
+          <svg viewBox="0 0 560 330" role="img" aria-labelledby="schemat-czad-tytul">
+            <title id="schemat-czad-tytul">
+              Widok ściany: czujka czadu 1,5–1,9 m nad podłogą i 1–3 m od kotła, z dala od okna i kratki wentylacyjnej
+            </title>
+            <!-- ściana -->
+            <path d="M40 290V40H520V290" fill="none" stroke="var(--tusz)" stroke-width="8"></path>
+            <path d="M20 292H540" stroke="var(--tusz)" stroke-width="4"></path>
+            <!-- kocioł -->
+            <rect x="76" y="92" width="74" height="104" rx="3" fill="var(--dym-jasny)" stroke="var(--tusz)" stroke-width="2.500"></rect>
+            <path d="M92 196V230M134 196V230M113 92V44" stroke="var(--tusz)" stroke-width="2.500" fill="none"></path>
+            <circle cx="113" cy="166" r="9" fill="none" stroke="var(--tusz)" stroke-width="2"></circle>
+            <text class="schemat__opis" x="113" y="252" text-anchor="middle">kocioł</text>
+            <!-- okno i kratka -->
+            <rect x="412" y="92" width="84" height="110" fill="none" stroke="var(--dym)" stroke-width="3"></rect>
+            <path d="M454 92V202M412 147H496" stroke="var(--dym)" stroke-width="2"></path>
+            <rect x="360" y="56" width="34" height="22" fill="none" stroke="var(--dym)" stroke-width="3"></rect>
+            <path d="M360 63H394M360 70H394" stroke="var(--dym)" stroke-width="2"></path>
+            <text class="schemat__nie" x="508" y="228" text-anchor="end">nie przy oknie</text>
+            <text class="schemat__nie" x="350" y="72" text-anchor="end">nie przy kratce</text>
+            <!-- czujka -->
+            <rect x="282" y="116" width="40" height="30" rx="4" fill="var(--papier)" stroke="var(--tusz)" stroke-width="2.500"></rect>
+            <rect x="289" y="122" width="26" height="12" fill="var(--lcd-tlo)" stroke="var(--lcd)" stroke-width="1.5"></rect>
+            <circle cx="311" cy="140" r="2" fill="var(--lcd)"></circle>
+            <!-- wymiar pionowy -->
+            <g stroke="var(--lcd)" stroke-width="1.5" fill="none">
+              <path d="M302 152V286M294 152H310M294 286H310"></path>
+              <path d="M156 131H276M156 123V139M276 123V139"></path>
+            </g>
+            <text class="schemat__wymiar schemat__wymiar--lcd" x="312" y="266">1,5–1,9 m</text>
+            <text class="schemat__wymiar schemat__wymiar--lcd" x="216" y="120" text-anchor="middle">1–3 m</text>
+          </svg>
+          <figcaption>
+            Widok ściany w kuchni lub kotłowni. Wysokość mierz od podłogi, odległość od urządzenia – w poziomie.
+          </figcaption>
+        </figure>
+
+        <div class="reguly">
+          <h3>Najczęstsze błędy</h3>
+          <ul class="lista lista--nie">
+            <li>czujka na suficie albo tuż nad podłogą</li>
+            <li>czujka zasłonięta zasłoną, szafką lub schowana we wnęce</li>
+            <li>czujka przy oknie lub kratce – świeże powietrze zaniża pomiar</li>
+            <li>czujka w oparach: tuż nad kuchenką, przy wannie, w kurzu</li>
+          </ul>
+          <h3>Czujka czadu to nie czujka dymu</h3>
+          <p>
+            Czujka czadu nie wykrywa dymu ani ulatniającego się gazu. Czujka dymu nie wykrywa czadu. W mieszkaniu
+            z kotłem gazowym potrzebne są obie.
+          </p>
+        </div>
+      </div>
+
+      <ol class="kroki">
+        {
+          krokiCzad.map((k) => (
+            <li>
+              <h3>{k.tytul}</h3>
+              <p>{k.opis}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier" id="po-montazu">
+    <div class="owijka dwie">
+      <div class="proza">
+        <h2>Po montażu: test i konserwacja</h2>
+        <p class="wstep">Czujka pracuje sama, ale trzeba jej pilnować. Cała obsługa zajmuje kilka minut w roku.</p>
+        <Photo plik="test-czujki.webp" alt="Dłoń naciskająca przycisk testu na czujce dymu" szer={1200} wys={800} />
+      </div>
+      <dl class="obsluga">
+        <div>
+          <dt>Raz w miesiącu</dt>
+          <dd>Naciśnij przycisk TEST i poczekaj na sygnał. Dobrze robić to zawsze tego samego dnia, na przykład pierwszego.</dd>
+        </div>
+        <div>
+          <dt>Dwa razy w roku</dt>
+          <dd>Odkurz kratkę czujki miękką końcówką odkurzacza. Kurz i pajęczyny to najczęstsza przyczyna fałszywych alarmów.</dd>
+        </div>
+        <div>
+          <dt>Gdy czujka piszczy co kilkadziesiąt sekund</dt>
+          <dd>To sygnał słabej baterii, nie alarm. Wymień baterię albo – w modelach z baterią wbudowaną na 10 lat – całą czujkę.</dd>
+        </div>
+        <div>
+          <dt>Po dacie z obudowy</dt>
+          <dd>Każda czujka ma termin wymiany: zwykle 10 lat dla czujki dymu i 7–10 lat dla czujki czadu. Po tym czasie sensor traci czułość.</dd>
+        </div>
+        <div>
+          <dt>Przy malowaniu i remoncie</dt>
+          <dd>Zdejmij czujkę albo osłoń ją na czas prac. Nigdy jej nie maluj. Po remoncie od razu załóż z powrotem.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sekcja" id="alarm">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Gdy zadziała alarm</h2>
+        <p>Ciągły, głośny sygnał to alarm. Nie szukaj przyczyny po omacku i nie wyjmuj baterii.</p>
+      </div>
+      <div class="dwie alarmy">
+        <div class="alarm alarm--dym arkusz">
+          <h3>Alarm czujki dymu</h3>
+          <ol>
+            {alarmDym.map((krok) => <li>{krok}</li>)}
+          </ol>
+          <p class="przypis">
+            Klatka schodowa jest pełna dymu? Zostań w mieszkaniu, zamknij drzwi, uszczelnij je mokrym ręcznikiem
+            i wzywaj pomocy z okna lub balkonu.
+          </p>
+        </div>
+        <div class="alarm alarm--czad arkusz">
+          <h3>Alarm czujki czadu</h3>
+          <ol>
+            {alarmCzad.map((krok) => <li>{krok}</li>)}
+          </ol>
+          <p class="przypis">
+            Czadu nie widać i nie czuć. Jeśli czujka alarmuje, a wszystko „wygląda normalnie” – wierz czujce.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier" id="ochrona-domu">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Co jeszcze chroni dom przed pożarem</h2>
+        <p>Czujka ostrzega. Te rzeczy pomagają zdusić pożar w pierwszej minucie albo w ogóle do niego nie dopuścić.</p>
+      </div>
+      <dl class="ochrona">
+        {
+          ochrona.map((o) => (
+            <div>
+              <dt>{o.tytul}</dt>
+              <dd>{o.opis}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--granat">
+    <div class="owijka koniec">
+      <h2>Nie masz wiertarki albo czasu?</h2>
+      <p class="wstep">
+        Przyjadę, dobiorę miejsca, zamontuję czujki i pokażę domownikom, jak je testować. Dojazd do {
+          firma.zasieg.promienKm
+        } km od miejscowości {firma.zasieg.baza}.
+      </p>
+      <div class="przyciski">
+        <a class="przycisk" href={adres('wycena/')}>
+          <Icon nazwa="kalkulator" />
+          Policz wycenę
+        </a>
+        <a class="przycisk przycisk--obrys" href={linkTelefon}>
+          <Icon nazwa="telefon" />
+          {firma.telefonWyswietlany}
+        </a>
+      </div>
+      <p class="przypis">
+        Poradnik opiera się na zaleceniach Państwowej Straży Pożarnej. Jeśli instrukcja Twojej czujki podaje inne
+        odległości, pierwszeństwo ma instrukcja producenta.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .spis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: var(--o-4);
+  }
+
+  .spis a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--papier);
+    font-weight: 600;
+    font-size: var(--t-s);
+    text-decoration: none;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .spis a:hover {
+    background: var(--tusz);
+    color: #fff;
+  }
+
+  /* schematy */
+  .schemat {
+    padding: clamp(0.75rem, 0.4rem + 1.6vw, 1.5rem);
+  }
+
+  .schemat svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .schemat figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--t-xs);
+    line-height: 1.45;
+    color: var(--tusz-2);
+  }
+
+  .schemat text {
+    font-family: var(--kroj);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .schemat__wymiar {
+    fill: var(--tusz);
+  }
+
+  .schemat__wymiar--lcd {
+    fill: var(--lcd);
+  }
+
+  .schemat__nie {
+    fill: var(--czerwien-ciemna);
+  }
+
+  .schemat__tak {
+    fill: var(--lcd);
+    font-size: 19px;
+  }
+
+  .schemat__opis {
+    fill: var(--tusz-2);
+    font-weight: 500;
+  }
+
+  /* na telefonie rysunek jest o połowę mniejszy – podpisy rosną, żeby dało się je przeczytać */
+  @media (max-width: 34rem) {
+    .schemat text {
+      font-size: 22px;
+    }
+  }
+
+  .reguly {
+    display: grid;
+    gap: var(--o-2);
+    align-content: start;
+  }
+
+  .reguly h3 {
+    font-size: var(--t-l);
+  }
+
+  .reguly h3:not(:first-child) {
+    margin-top: var(--o-2);
+  }
+
+  /* kroki montażu – kolejność ma znaczenie */
+  .kroki {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--o-5);
+    counter-reset: krok;
+    display: grid;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .kroki li {
+    counter-increment: krok;
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    column-gap: var(--o-2);
+    padding-block: var(--o-3);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .kroki li::before {
+    content: counter(krok);
+    grid-row: 1 / span 2;
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: var(--t-2xl);
+    line-height: 0.9;
+    color: var(--czerwien);
+  }
+
+  .kroki h3 {
+    font-size: var(--t-l);
+  }
+
+  .kroki p {
+    margin-top: 0.35rem;
+    max-width: 44rem;
+    color: var(--tusz-2);
+  }
+
+  @media (min-width: 56rem) {
+    .kroki li {
+      grid-template-columns: 4rem minmax(0, 4fr) minmax(0, 7fr);
+      align-items: baseline;
+    }
+
+    .kroki li::before {
+      grid-row: auto;
+    }
+
+    .kroki p {
+      margin-top: 0;
+    }
+  }
+
+  /* obsługa */
+  .obsluga {
+    border-top: 2px solid var(--tusz);
+  }
+
+  .obsluga div {
+    padding-block: var(--o-2);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .obsluga dt {
+    font-family: var(--kroj-waski);
+    font-weight: 700;
+    font-size: var(--t-l);
+    line-height: 1.15;
+  }
+
+  .obsluga dd {
+    margin: 0.3rem 0 0;
+    color: var(--tusz-2);
+  }
+
+  .proza :global(.zdjecie) {
+    margin-top: var(--o-3);
+  }
+
+  /* alarmy */
+  .alarmy {
+    align-items: stretch;
+    gap: var(--o-3);
+  }
+
+  .alarm {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+    border-top-width: 8px;
+  }
+
+  .alarm--dym {
+    border-top-color: var(--czerwien);
+  }
+
+  .alarm--czad {
+    border-top-color: var(--lcd);
+  }
+
+  .alarm ol {
+    margin-top: var(--o-2);
+    padding-left: 1.5rem;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .alarm li::marker {
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: 1.15em;
+  }
+
+  .alarm li {
+    padding-left: 0.3rem;
+  }
+
+  .alarm .przypis {
+    margin-top: var(--o-3);
+    padding-top: var(--o-2);
+    border-top: 1px solid var(--dym);
+  }
+
+  /* inne elementy ochrony */
+  .ochrona {
+    display: grid;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .ochrona div {
+    padding-block: var(--o-3);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .ochrona dt {
+    font-family: var(--kroj-waski);
+    font-weight: 700;
+    font-size: var(--t-xl);
+    line-height: 1.1;
+  }
+
+  .ochrona dd {
+    margin: 0.5rem 0 0;
+    color: var(--tusz-2);
+    max-width: 34rem;
+  }
+
+  @media (min-width: 48rem) {
+    .ochrona {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--o-5);
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .ochrona {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .koniec {
+    display: grid;
+    gap: var(--o-3);
+    justify-items: start;
+  }
+
+  .koniec .przypis {
+    max-width: 40rem;
+  }
+</style>

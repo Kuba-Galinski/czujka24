@@ -1,0 +1,297 @@
+---
+import FloorPlan from '../components/FloorPlan.astro';
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import Terminy from '../components/Terminy.astro';
+import Zasieg from '../components/Zasieg.astro';
+import { adres, firma, linkTelefon } from '../config';
+import Base from '../layouts/Base.astro';
+
+const oferta = [
+  {
+    tytul: 'Czujki dymu i czadu z montażem',
+    opis: 'Dobieram liczbę i miejsca, przywożę czujki z certyfikatem i montuję je na miejscu. Na koniec wspólnie testujemy alarm.',
+    link: 'wycena/',
+    etykieta: 'Policz wycenę',
+  },
+  {
+    tytul: 'Szkolenia przeciwpożarowe',
+    opis: 'Dla mieszkańców, wspólnot i firm. Co robić, gdy zadziała czujka, jak użyć gaśnicy i jak wyjść z zadymionego budynku.',
+    link: 'szkolenia/',
+    etykieta: 'Zobacz szkolenia',
+  },
+  {
+    tytul: 'Cały budynek naraz',
+    opis: 'Dla wspólnot i spółdzielni: jedna wycena, montaż klatka po klatce, protokół dla zarządu i spotkanie z mieszkańcami.',
+    link: 'wspolnoty/',
+    etykieta: 'Oferta dla wspólnot',
+  },
+];
+---
+
+<Base
+  tytul="Czujki dymu i czadu z montażem, szkolenia ppoż. – Głogów i okolice"
+  opis="Sprzedaż i montaż czujek dymu i czadu oraz szkolenia przeciwpożarowe dla mieszkańców, wspólnot i firm. Strażak OSP, dojazd do 100 km od Głogowa i Gaworzyc."
+>
+  <section class="hero">
+    <div class="owijka hero__siatka">
+      <div class="hero__tekst">
+        <h1><span>Dym nie budzi.</span> <span>Czujka tak.</span></h1>
+        <p class="wstep">
+          Sprzedaję i montuję czujki dymu i czadu w domach, blokach i firmach. Prowadzę też szkolenia, po których
+          wiadomo, co zrobić, gdy alarm zadziała naprawdę.
+        </p>
+        <div class="przyciski">
+          <a class="przycisk" href={adres('wycena/')}>
+            <Icon nazwa="kalkulator" />
+            Policz wycenę
+          </a>
+          <a class="przycisk przycisk--obrys" href={linkTelefon}>
+            <Icon nazwa="telefon" />
+            Zadzwoń: {firma.telefonWyswietlany}
+          </a>
+        </div>
+        <ul class="hero__fakty">
+          <li>Strażak OSP po certyfikowanych szkoleniach CNBOP-PIB</li>
+          <li>Czujki zgodne z normami PN-EN 14604 i PN-EN 50291-1</li>
+          <li>Dojazd do {firma.zasieg.promienKm} km od Głogowa i Gaworzyc</li>
+        </ul>
+      </div>
+
+      <div class="hero__plan">
+        <FloorPlan />
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Czym się zajmuję</h2>
+      </div>
+      <ul class="oferta">
+        {
+          oferta.map((o) => (
+            <li>
+              <h3>
+                <a href={adres(o.link)}>{o.tytul}</a>
+              </h3>
+              <p>{o.opis}</p>
+              <a class="oferta__link" href={adres(o.link)}>
+                {o.etykieta}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Czujki są już obowiązkowe. Zostały terminy.</h2>
+        <p>
+          Od grudnia 2024 roku przepisy wymagają czujek dymu w mieszkaniach i domach oraz czujek czadu wszędzie tam,
+          gdzie spala się gaz, węgiel, drewno lub olej.
+        </p>
+      </div>
+      <Terminy />
+      <p class="przypis terminy-zrodlo">
+        Podstawa: rozporządzenie MSWiA z 21 listopada 2024 r. zmieniające rozporządzenie w sprawie ochrony
+        przeciwpożarowej budynków, innych obiektów budowlanych i terenów (<a
+          href="https://eli.gov.pl/eli/DU/2024/1716/ogl/pol/pdf"
+          rel="noopener">Dz.U. 2024 poz. 1716</a
+        >). Opis jest uproszczony – w razie wątpliwości rozstrzyga tekst rozporządzenia.
+      </p>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--granat">
+    <div class="owijka dwie dwie--waska-szeroka zasieg-sekcja">
+      <div>
+        <h2>Dojeżdżam do {firma.zasieg.promienKm} km od Głogowa</h2>
+        <p class="wstep">
+          Bazą są Gaworzyce i Głogów. Montuję i szkolę w województwach dolnośląskim, lubuskim i wielkopolskim – od
+          Zielonej Góry i Leszna po Legnicę i Wrocław.
+        </p>
+        <p class="zasieg-sekcja__dopisek">
+          Twojej miejscowości nie ma na mapie? Zadzwoń. Przy większych zleceniach, na przykład dla całego bloku,
+          dojeżdżam dalej.
+        </p>
+        <div class="przyciski">
+          <a class="przycisk" href={linkTelefon}>
+            <Icon nazwa="telefon" />
+            {firma.telefonWyswietlany}
+          </a>
+          <a class="przycisk przycisk--obrys" href={adres('wycena/#zapytanie')}>Napisz zapytanie</a>
+        </div>
+      </div>
+      <Zasieg />
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka dwie dwie--szeroka-waska">
+      <div class="proza">
+        <h2>Kto przyjedzie do Twojego domu</h2>
+        <p class="wstep">
+          czujka24 prowadzi strażak ochotniczej straży pożarnej. To jednoosobowa działalność: ta sama osoba odbiera
+          telefon, dobiera czujki, montuje je i prowadzi szkolenie.
+        </p>
+        <p>
+          Wiedza pochodzi z dwóch źródeł. Pierwsze to wyjazdy do pożarów mieszkań i zatruć czadem – stąd wiadomo, jak
+          te zdarzenia wyglądają od środka i ile minut naprawdę jest na wyjście. Drugie to certyfikowane szkolenia
+          organizowane przez CNBOP-PIB, państwowy instytut badawczy ochrony przeciwpożarowej.
+        </p>
+        <ul class="lista">
+          <li>Czujki wyłącznie z deklaracją zgodności z PN-EN 14604 (dym) i PN-EN 50291-1 (czad)</li>
+          <li>Montaż według instrukcji producenta i zaleceń Państwowej Straży Pożarnej</li>
+          <li>Po montażu test każdej czujki i krótka instrukcja dla domowników</li>
+        </ul>
+      </div>
+      <Photo plik="montaz-sufit.webp" alt="Montaż czujki dymu na suficie w mieszkaniu" szer={960} wys={1200} />
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="owijka koniec">
+      <h2>Sprawdź, ile kosztuje zabezpieczenie Twojego mieszkania</h2>
+      <p class="wstep">
+        Kalkulator pokaże cenę „od” dla Twojej liczby czujek. Dokładną wycenę przygotowuję indywidualnie, po krótkiej
+        rozmowie.
+      </p>
+      <div class="przyciski">
+        <a class="przycisk" href={adres('wycena/')}>
+          <Icon nazwa="kalkulator" />
+          Policz wycenę
+        </a>
+        <a class="przycisk przycisk--obrys" href={adres('montaz-czujnikow/')}>Wolę zamontować samodzielnie</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--o-sekcja);
+  }
+
+  .hero__siatka {
+    display: grid;
+    gap: var(--o-4);
+  }
+
+  .hero__tekst {
+    display: grid;
+    gap: var(--o-3);
+    align-content: start;
+  }
+
+  .hero__tekst h1 {
+    font-size: clamp(3.25rem, 1.4rem + 5vw, 5.75rem);
+  }
+
+  .hero__tekst h1 span {
+    display: block;
+  }
+
+  .hero__fakty {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--o-2);
+    border-top: var(--linia);
+    font-size: var(--t-s);
+    max-width: 34rem;
+  }
+
+  .hero__fakty li {
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--dym);
+  }
+
+  @media (min-width: 62rem) {
+    .hero__siatka {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+  }
+
+  /* oferta: wiersze jak pozycje w zestawieniu, nie kafelki */
+  .oferta {
+    list-style: none;
+    padding: 0;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .oferta li {
+    display: grid;
+    gap: 0.75rem;
+    padding-block: var(--o-3);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .oferta h3 a {
+    text-decoration: none;
+  }
+
+  .oferta p {
+    color: var(--tusz-2);
+    max-width: 36rem;
+  }
+
+  .oferta__link {
+    font-weight: 700;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  @media (min-width: 56rem) {
+    .oferta li {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) minmax(0, 2.4fr);
+      gap: var(--o-4);
+      align-items: baseline;
+      padding-block: var(--o-4);
+    }
+
+    .oferta__link {
+      justify-self: end;
+    }
+  }
+
+  .terminy-zrodlo {
+    margin-top: var(--o-4);
+    max-width: 46rem;
+  }
+
+  .zasieg-sekcja {
+    align-items: center;
+  }
+
+  .zasieg-sekcja .wstep {
+    margin-top: var(--o-3);
+  }
+
+  .zasieg-sekcja__dopisek {
+    margin-top: var(--o-2);
+    color: #d5dee8;
+    max-width: 34rem;
+  }
+
+  .zasieg-sekcja .przyciski {
+    margin-top: var(--o-4);
+  }
+
+  .koniec {
+    display: grid;
+    gap: var(--o-3);
+    justify-items: start;
+  }
+
+  .koniec h2 {
+    max-width: 20ch;
+  }
+</style>

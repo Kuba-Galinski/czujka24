@@ -1,0 +1,564 @@
+---
+/**
+ * Kalkulator oferty – pokazuje cenę "od" na podstawie stawek z src/data/cennik.ts.
+ * Wynik można jednym przyciskiem przenieść do formularza zapytania (id="zapytanie").
+ */
+import { cennik } from '../data/cennik';
+
+const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
+---
+
+<section class="kalkulator arkusz" aria-labelledby="kalkulator-tytul" data-kalkulator data-cennik={JSON.stringify(cennik)}>
+  <form class="kalkulator__pola" data-kalkulator-pola novalidate>
+    <h2 id="kalkulator-tytul">Kalkulator oferty</h2>
+
+    <fieldset class="kalkulator__dla">
+      <legend>Dla kogo liczymy?</legend>
+      <div class="przelacznik">
+        <label><input type="radio" name="dla" value="dom" checked /><span>Dom lub mieszkanie</span></label>
+        <label><input type="radio" name="dla" value="wspolnota" /><span>Wspólnota, spółdzielnia</span></label>
+        <label><input type="radio" name="dla" value="firma" /><span>Firma, instytucja</span></label>
+      </div>
+    </fieldset>
+
+    <div class="kalkulator__ilosci">
+      <div class="licznik">
+        <label for="k-dym">Czujki dymu</label>
+        <div class="licznik__pole">
+          <button type="button" data-krok="-1" data-cel="k-dym" aria-label="Mniej czujek dymu">−</button>
+          <input id="k-dym" name="dym" type="number" inputmode="numeric" min="0" max="999" step="1" value="3" aria-describedby="k-dym-opis" />
+          <button type="button" data-krok="1" data-cel="k-dym" aria-label="Więcej czujek dymu">+</button>
+        </div>
+        <p class="przypis" id="k-dym-opis">Zwykle jedna na korytarz i po jednej na każdy pokój, w którym ktoś śpi.</p>
+      </div>
+
+      <div class="licznik">
+        <label for="k-czad">Czujki czadu</label>
+        <div class="licznik__pole">
+          <button type="button" data-krok="-1" data-cel="k-czad" aria-label="Mniej czujek czadu">−</button>
+          <input id="k-czad" name="czad" type="number" inputmode="numeric" min="0" max="999" step="1" value="1" aria-describedby="k-czad-opis" />
+          <button type="button" data-krok="1" data-cel="k-czad" aria-label="Więcej czujek czadu">+</button>
+        </div>
+        <p class="przypis" id="k-czad-opis">Jedna na każde pomieszczenie z kotłem, piecykiem gazowym, kominkiem lub piecem.</p>
+      </div>
+    </div>
+
+    <div class="kalkulator__opcje">
+      <label class="haczyk">
+        <input type="checkbox" name="montaz" checked />
+        <span>Montaż u mnie <small>od {zl(cennik.montazSztuka)} za czujkę, wizyta od {zl(cennik.wizytaMinimum)}</small></span>
+      </label>
+      <label class="haczyk">
+        <input type="checkbox" name="szkolenie" />
+        <span>Szkolenie <small data-szkolenie-cena>od {zl(cennik.szkolenie.dom)} za spotkanie</small></span>
+      </label>
+    </div>
+  </form>
+
+  <div class="kalkulator__wynik">
+    <p class="kalkulator__etykieta">Orientacyjny koszt</p>
+    <p class="kalkulator__suma" aria-live="polite" aria-atomic="true">
+      <span class="kalkulator__od">od</span>
+      <output data-suma for="k-dym k-czad">–</output>
+    </p>
+
+    <dl class="kalkulator__rozbicie" data-rozbicie></dl>
+
+    <noscript>
+      <p>Kalkulator wymaga włączonego JavaScriptu. Stawki znajdziesz poniżej, a wycenę przygotuję po kontakcie.</p>
+    </noscript>
+
+    <p class="kalkulator__zastrzezenie">
+      To cena „od”. <strong>Dokładną wycenę przygotowuję indywidualnie</strong> – zależy od modelu czujek, wysokości
+      i rodzaju sufitów oraz dojazdu.
+    </p>
+    {
+      cennik.przykladowe && (
+        <p class="kalkulator__robocze">Stawki w kalkulatorze są przykładowe – cennik czeka na uzupełnienie.</p>
+      )
+    }
+
+    <button class="przycisk" type="button" data-do-zapytania>Wyślij zapytanie z tą wyceną</button>
+  </div>
+
+  <div class="kalkulator__stawki">
+    <h3>Stawki</h3>
+    <dl>
+      <div><dt>Czujka dymu z baterią</dt><dd>od {zl(cennik.czujkaDymu)}</dd></div>
+      <div><dt>Czujka czadu z baterią</dt><dd>od {zl(cennik.czujkaCzadu)}</dd></div>
+      <div><dt>Montaż jednej czujki</dt><dd>od {zl(cennik.montazSztuka)}</dd></div>
+      <div><dt>Szkolenie dla domowników</dt><dd>od {zl(cennik.szkolenie.dom)}</dd></div>
+      <div><dt>Szkolenie dla wspólnoty</dt><dd>od {zl(cennik.szkolenie.wspolnota)}</dd></div>
+      <div><dt>Szkolenie dla firmy</dt><dd>od {zl(cennik.szkolenie.firma)}</dd></div>
+      {
+        cennik.rabaty.map((r) => (
+          <div>
+            <dt>Rabat od {r.odSztuk} czujek</dt>
+            <dd>{r.procent}%</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<script>
+  import type { Cennik } from '../data/cennik';
+
+  type Dla = 'dom' | 'wspolnota' | 'firma';
+  const DOMYSLNE: Record<Dla, { dym: number; czad: number }> = {
+    dom: { dym: 3, czad: 1 },
+    wspolnota: { dym: 40, czad: 10 },
+    firma: { dym: 6, czad: 1 },
+  };
+  const NAZWY: Record<Dla, string> = {
+    dom: 'dom lub mieszkanie',
+    wspolnota: 'wspólnota lub spółdzielnia',
+    firma: 'firma lub instytucja',
+  };
+
+  const zl = (kwota: number) => `${Math.round(kwota).toLocaleString('pl-PL')} zł`;
+
+  document.querySelectorAll<HTMLElement>('[data-kalkulator]').forEach((korzen) => {
+    const cennik = JSON.parse(korzen.dataset.cennik!) as Cennik;
+    const formularz = korzen.querySelector<HTMLFormElement>('[data-kalkulator-pola]')!;
+    const poleDym = formularz.elements.namedItem('dym') as HTMLInputElement;
+    const poleCzad = formularz.elements.namedItem('czad') as HTMLInputElement;
+    const poleMontaz = formularz.elements.namedItem('montaz') as HTMLInputElement;
+    const poleSzkolenie = formularz.elements.namedItem('szkolenie') as HTMLInputElement;
+    const suma = korzen.querySelector<HTMLOutputElement>('[data-suma]')!;
+    const rozbicie = korzen.querySelector<HTMLElement>('[data-rozbicie]')!;
+    const cenaSzkolenia = korzen.querySelector<HTMLElement>('[data-szkolenie-cena]')!;
+
+    const dlaKogo = () => (new FormData(formularz).get('dla') as Dla) ?? 'dom';
+    const liczba = (pole: HTMLInputElement) => {
+      const n = Math.floor(Number(pole.value));
+      return Number.isFinite(n) ? Math.min(999, Math.max(0, n)) : 0;
+    };
+
+    let opis = '';
+
+    const przelicz = () => {
+      const dla = dlaKogo();
+      const dym = liczba(poleDym);
+      const czad = liczba(poleCzad);
+      const sztuk = dym + czad;
+      const wiersze: [string, string][] = [];
+
+      let czesc = 0;
+      if (dym > 0) {
+        czesc += dym * cennik.czujkaDymu;
+        wiersze.push([`Czujki dymu × ${dym}`, zl(dym * cennik.czujkaDymu)]);
+      }
+      if (czad > 0) {
+        czesc += czad * cennik.czujkaCzadu;
+        wiersze.push([`Czujki czadu × ${czad}`, zl(czad * cennik.czujkaCzadu)]);
+      }
+      if (poleMontaz.checked && sztuk > 0) {
+        const montaz = Math.max(sztuk * cennik.montazSztuka, cennik.wizytaMinimum);
+        czesc += montaz;
+        wiersze.push([`Montaż × ${sztuk}`, zl(montaz)]);
+      }
+
+      const rabat = [...cennik.rabaty].reverse().find((r) => sztuk >= r.odSztuk);
+      if (rabat && czesc > 0) {
+        const kwota = (czesc * rabat.procent) / 100;
+        czesc -= kwota;
+        wiersze.push([`Rabat ${rabat.procent}% (od ${rabat.odSztuk} czujek)`, `−${zl(kwota)}`]);
+      }
+
+      cenaSzkolenia.textContent = `od ${zl(cennik.szkolenie[dla])} za spotkanie`;
+      if (poleSzkolenie.checked) {
+        czesc += cennik.szkolenie[dla];
+        wiersze.push(['Szkolenie', zl(cennik.szkolenie[dla])]);
+      }
+
+      suma.textContent = czesc > 0 ? zl(czesc) : '0 zł';
+      rozbicie.replaceChildren(
+        ...wiersze.map(([nazwa, kwota]) => {
+          const wiersz = document.createElement('div');
+          const dt = document.createElement('dt');
+          const dd = document.createElement('dd');
+          dt.textContent = nazwa;
+          dd.textContent = kwota;
+          wiersz.append(dt, dd);
+          return wiersz;
+        }),
+      );
+
+      opis = [
+        `Zapytanie z kalkulatora (${NAZWY[dla]}):`,
+        `- czujki dymu: ${dym}`,
+        `- czujki czadu: ${czad}`,
+        `- montaż: ${poleMontaz.checked ? 'tak' : 'nie'}`,
+        `- szkolenie: ${poleSzkolenie.checked ? 'tak' : 'nie'}`,
+        `- cena z kalkulatora: od ${zl(czesc)}`,
+      ].join('\n');
+    };
+
+    formularz.addEventListener('input', przelicz);
+    formularz.addEventListener('submit', (zdarzenie) => zdarzenie.preventDefault());
+
+    formularz.querySelectorAll<HTMLInputElement>('input[name="dla"]').forEach((radio) =>
+      radio.addEventListener('change', () => {
+        const d = DOMYSLNE[radio.value as Dla];
+        poleDym.value = String(d.dym);
+        poleCzad.value = String(d.czad);
+        przelicz();
+      }),
+    );
+
+    formularz.querySelectorAll<HTMLButtonElement>('[data-krok]').forEach((przycisk) =>
+      przycisk.addEventListener('click', () => {
+        const pole = formularz.querySelector<HTMLInputElement>(`#${przycisk.dataset.cel}`)!;
+        pole.value = String(Math.min(999, Math.max(0, liczba(pole) + Number(przycisk.dataset.krok))));
+        przelicz();
+      }),
+    );
+
+    [poleDym, poleCzad].forEach((pole) => pole.addEventListener('blur', () => (pole.value = String(liczba(pole)))));
+
+    korzen.querySelector<HTMLButtonElement>('[data-do-zapytania]')!.addEventListener('click', () => {
+      const wiadomosc = document.querySelector<HTMLTextAreaElement>('#f-wiadomosc');
+      const cel = document.querySelector<HTMLElement>('#zapytanie');
+      if (!wiadomosc || !cel) return;
+      const reszta = wiadomosc.value.replace(/Zapytanie z kalkulatora[\s\S]*?cena z kalkulatora: od [^\n]*\n*/u, '').trim();
+      wiadomosc.value = reszta ? `${opis}\n\n${reszta}` : `${opis}\n\n`;
+      cel.scrollIntoView({ block: 'start' });
+      document.querySelector<HTMLInputElement>('#f-imie')?.focus({ preventScroll: true });
+    });
+
+    // Odnośniki typu /wycena/?dla=wspolnota ustawiają od razu właściwy wariant.
+    const zAdresu = new URLSearchParams(location.search).get('dla');
+    if (zAdresu && zAdresu in DOMYSLNE) {
+      const radio = formularz.querySelector<HTMLInputElement>(`input[name="dla"][value="${zAdresu}"]`);
+      if (radio) {
+        radio.checked = true;
+        poleDym.value = String(DOMYSLNE[zAdresu as Dla].dym);
+        poleCzad.value = String(DOMYSLNE[zAdresu as Dla].czad);
+      }
+    }
+
+    przelicz();
+  });
+</script>
+
+<style>
+  .kalkulator {
+    display: grid;
+    overflow: hidden;
+  }
+
+  .kalkulator__pola,
+  .kalkulator__wynik,
+  .kalkulator__stawki {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+  }
+
+  .kalkulator__pola {
+    display: grid;
+    gap: var(--o-3);
+    align-content: start;
+  }
+
+  .kalkulator h2 {
+    font-size: var(--t-xl);
+  }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+
+  legend,
+  .licznik > label {
+    display: block;
+    padding: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  /* przełącznik wariantu */
+  .przelacznik {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .przelacznik label {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+
+  .przelacznik input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .przelacznik span {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.5rem 0.9rem;
+    border: 1.5px solid var(--dym);
+    border-radius: var(--r);
+    background: var(--papier);
+    font-weight: 600;
+    font-size: var(--t-s);
+    line-height: 1.2;
+    transition:
+      border-color 140ms ease,
+      background-color 140ms ease;
+  }
+
+  .przelacznik input:hover + span {
+    border-color: var(--tusz);
+  }
+
+  .przelacznik input:checked + span {
+    border-color: var(--granat);
+    background: var(--granat);
+    color: #fff;
+  }
+
+  .przelacznik input:focus-visible + span {
+    outline: 3px solid var(--granat-2);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .przelacznik {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .kalkulator__ilosci {
+    display: grid;
+    gap: var(--o-3);
+  }
+
+  @media (min-width: 34rem) {
+    .kalkulator__ilosci {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .licznik__pole {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+    max-width: 14rem;
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--papier);
+    overflow: hidden;
+  }
+
+  .licznik__pole:focus-within {
+    outline: 3px solid var(--granat-2);
+    outline-offset: 2px;
+  }
+
+  .licznik__pole button {
+    min-height: 3rem;
+    border: 0;
+    background: var(--dym-jasny);
+    color: var(--tusz);
+    font: inherit;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 140ms ease;
+  }
+
+  .licznik__pole button:hover {
+    background: var(--dym);
+  }
+
+  .licznik__pole input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-inline: var(--linia);
+    background: transparent;
+    color: var(--tusz);
+    font: inherit;
+    font-family: var(--kroj-waski);
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  .licznik__pole input:focus {
+    outline: none;
+  }
+
+  .licznik__pole input::-webkit-outer-spin-button,
+  .licznik__pole input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .licznik .przypis {
+    margin-top: 0.5rem;
+    max-width: 22rem;
+  }
+
+  .kalkulator__opcje {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .haczyk {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .haczyk input {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.12rem 0 0;
+    accent-color: var(--granat);
+    cursor: pointer;
+  }
+
+  .haczyk small {
+    display: block;
+    font-size: var(--t-xs);
+    font-weight: 400;
+    color: var(--tusz-2);
+  }
+
+  /* wynik */
+  .kalkulator__wynik {
+    display: grid;
+    gap: var(--o-2);
+    align-content: start;
+    background: var(--granat);
+    color: #fff;
+  }
+
+  .kalkulator__etykieta {
+    font-weight: 600;
+    color: #d5dee8;
+  }
+
+  .kalkulator__suma {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: clamp(3rem, 2rem + 4vw, 4.5rem);
+    line-height: 0.95;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kalkulator__od {
+    font-size: 0.45em;
+    font-weight: 700;
+  }
+
+  .kalkulator__rozbicie {
+    display: grid;
+    border-top: 1px solid rgb(255 255 255 / 0.3);
+    min-height: 7.5rem;
+    align-content: start;
+  }
+
+  .kalkulator__rozbicie :global(div),
+  .kalkulator__stawki dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.18);
+    font-size: var(--t-s);
+  }
+
+  .kalkulator__rozbicie :global(dd),
+  .kalkulator__stawki dd {
+    margin: 0;
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kalkulator__zastrzezenie {
+    font-size: var(--t-s);
+    line-height: 1.45;
+    color: #e6ecf2;
+  }
+
+  .kalkulator__robocze {
+    padding: 0.5rem 0.75rem;
+    border-radius: 3px;
+    background: #fff3c4;
+    color: #3d3200;
+    font-size: var(--t-xs);
+    font-weight: 600;
+  }
+
+  .kalkulator__wynik .przycisk {
+    margin-top: 0.5rem;
+    justify-self: start;
+  }
+
+  .kalkulator__wynik :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
+  .kalkulator__stawki {
+    border-top: var(--linia);
+  }
+
+  .kalkulator__stawki h3 {
+    font-size: var(--t-l);
+    margin-bottom: 0.5rem;
+  }
+
+  .kalkulator__stawki dl {
+    display: grid;
+    column-gap: var(--o-4);
+  }
+
+  .kalkulator__stawki dl div {
+    border-bottom-color: var(--dym);
+  }
+
+  @media (min-width: 40rem) {
+    .kalkulator__stawki dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .kalkulator {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+
+    .kalkulator__stawki {
+      grid-column: 1 / -1;
+    }
+
+    .kalkulator__stawki dl {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

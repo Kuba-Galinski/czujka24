@@ -1,0 +1,308 @@
+---
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import { adres, firma, linkTelefon } from '../config';
+import { cennik } from '../data/cennik';
+import Base from '../layouts/Base.astro';
+
+const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
+
+const szkolenia = [
+  {
+    id: 'mieszkancy',
+    tytul: 'Dla mieszkańców i rodzin',
+    dlaKogo: 'Spotkanie w domu, w świetlicy wiejskiej albo na osiedlu. Bez slajdów z paragrafami – z prawdziwą czujką, gaśnicą i kocem gaśniczym w rękach.',
+    program: [
+      'Jak brzmi alarm czujki dymu, a jak czujki czadu – i czym różni się sygnał słabej baterii',
+      'Co robić w pierwszych dwóch minutach pożaru w mieszkaniu',
+      'Zadymiona klatka schodowa: wychodzić czy zostać',
+      'Objawy zatrucia czadem, które łatwo pomylić z grypą',
+      'Gaśnica i koc gaśniczy – każdy uczestnik próbuje sam',
+      'Domowy plan ewakuacji: drogi wyjścia i miejsce zbiórki',
+    ],
+    czas: 'około 60–90 minut',
+    cena: cennik.szkolenie.dom,
+    dla: 'dom',
+  },
+  {
+    id: 'wspolnoty',
+    tytul: 'Dla wspólnot i spółdzielni',
+    dlaKogo: 'Dla zarządu, administratora i mieszkańców – najlepiej przy okazji zebrania albo zaraz po montażu czujek w budynku.',
+    program: [
+      'Nowe przepisy o czujkach: co, w których lokalach i do kiedy',
+      'Alarm u sąsiada – kiedy pukać, kiedy dzwonić pod 112',
+      'Ewakuacja z bloku: klatka schodowa, windy, osoby starsze i z niepełnosprawnością',
+      'Piwnice, wózkownie, hulajnogi i rowery elektryczne na klatce',
+      'Hydranty i gaśnice w częściach wspólnych – gdzie są i jak ich użyć',
+      'Pytania mieszkańców – zwykle najdłuższa część spotkania',
+    ],
+    czas: 'około 60–90 minut, także po południu i wieczorem',
+    cena: cennik.szkolenie.wspolnota,
+    dla: 'wspolnota',
+  },
+  {
+    id: 'firmy',
+    tytul: 'Dla firm i instytucji',
+    dlaKogo: 'Dla biur, sklepów, zakładów usługowych, szkół, przedszkoli i urzędów. Program dopasowuję do budynku, w którym pracujecie.',
+    program: [
+      'Pierwsza reakcja na pożar w miejscu pracy – kto co robi',
+      'Praktyczne użycie gaśnic: proszkowej, śniegowej i pianowej',
+      'Ewakuacja pracowników i klientów, liczenie ludzi na miejscu zbiórki',
+      'Najczęstsze przyczyny pożarów w biurach i lokalach: ładowarki, listwy, zaplecza kuchenne',
+      'Przejście po Waszym obiekcie: drogi ewakuacyjne, oznakowanie, podręczny sprzęt',
+    ],
+    czas: 'około 2–3 godzin, w siedzibie firmy',
+    cena: cennik.szkolenie.firma,
+    dla: 'firma',
+    uwaga: 'To szkolenie praktyczne. Uzupełnia obowiązkowe szkolenia BHP, ale ich nie zastępuje.',
+  },
+];
+
+const przebieg = [
+  {
+    tytul: 'Rozmowa',
+    opis: 'Dzwonisz albo piszesz. Ustalamy, kto będzie uczestnikiem, ile osób przyjdzie i w jakim budynku się spotkamy.',
+  },
+  {
+    tytul: 'Program pod budynek',
+    opis: 'Inaczej wygląda ewakuacja z domu jednorodzinnego, inaczej z jedenastego piętra. Program układam pod Wasze warunki.',
+  },
+  {
+    tytul: 'Spotkanie',
+    opis: 'Krótko teoria, długo praktyka. Każdy uczestnik trzyma w ręku gaśnicę i słyszy alarm czujki.',
+  },
+  {
+    tytul: 'Ściąga na lodówkę',
+    opis: 'Na koniec uczestnicy dostają jedną kartkę: co robić przy alarmie dymu, a co przy alarmie czadu.',
+  },
+];
+---
+
+<Base
+  tytul="Szkolenia przeciwpożarowe dla mieszkańców, wspólnot i firm"
+  opis="Praktyczne szkolenia przeciwpożarowe prowadzone przez strażaka OSP: reakcja na alarm czujki, użycie gaśnicy, ewakuacja. Dolnośląskie, lubuskie, wielkopolskie."
+>
+  <section class="czolo">
+    <div class="owijka dwie dwie--szeroka-waska">
+      <div>
+        <h1>Szkolenia, po których wiadomo, co robić</h1>
+        <p class="wstep">
+          Czujka daje kilka minut. Szkolenie uczy, jak ich nie zmarnować: kogo obudzić, którędy wyjść, kiedy gasić,
+          a kiedy zamknąć drzwi i uciekać.
+        </p>
+        <nav class="skroty" aria-label="Rodzaje szkoleń">
+          {szkolenia.map((s) => <a href={`#${s.id}`}>{s.tytul}</a>)}
+        </nav>
+      </div>
+      <Photo plik="szkolenie.webp" alt="Uczestnicy szkolenia ćwiczą użycie gaśnicy" szer={960} wys={1200} pilne />
+    </div>
+  </section>
+
+  {
+    szkolenia.map((s, i) => (
+      <section class:list={['sekcja', { 'sekcja--papier': i % 2 === 0 }]} id={s.id}>
+        <div class="owijka dwie dwie--waska-szeroka">
+          <div class="szkolenie__opis">
+            <h2>{s.tytul}</h2>
+            <p class="wstep">{s.dlaKogo}</p>
+            <dl class="szkolenie__dane">
+              <div>
+                <dt>Czas</dt>
+                <dd>{s.czas}</dd>
+              </div>
+              <div>
+                <dt>Cena</dt>
+                <dd>
+                  od {zl(s.cena)} za spotkanie
+                  {cennik.przykladowe && <span class="przypis"> (stawka przykładowa)</span>}
+                </dd>
+              </div>
+            </dl>
+            <a class="przycisk" href={adres(`wycena/?dla=${s.dla}`)}>
+              Zapytaj o termin
+            </a>
+          </div>
+          <div>
+            <h3>O czym rozmawiamy i co ćwiczymy</h3>
+            <ul class="lista szkolenie__program">
+              {s.program.map((punkt) => <li>{punkt}</li>)}
+            </ul>
+            {s.uwaga && <p class="przypis szkolenie__uwaga">{s.uwaga}</p>}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="sekcja">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Jak wygląda współpraca</h2>
+      </div>
+      <ol class="kroki">
+        {
+          przebieg.map((k) => (
+            <li>
+              <h3>{k.tytul}</h3>
+              <p>{k.opis}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--granat">
+    <div class="owijka koniec">
+      <h2>Ustalmy termin szkolenia</h2>
+      <p class="wstep">
+        Dojeżdżam do {firma.zasieg.promienKm} km od miejscowości {firma.zasieg.baza}. Szkolenie można połączyć
+        z montażem czujek – wtedy przyjeżdżam raz.
+      </p>
+      <div class="przyciski">
+        <a class="przycisk" href={linkTelefon}>
+          <Icon nazwa="telefon" />
+          {firma.telefonWyswietlany}
+        </a>
+        <a class="przycisk przycisk--obrys" href={adres('wycena/#zapytanie')}>Napisz zapytanie</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .skroty {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: var(--o-4);
+  }
+
+  .skroty a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--papier);
+    font-weight: 600;
+    font-size: var(--t-s);
+    text-decoration: none;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .skroty a:hover {
+    background: var(--tusz);
+    color: #fff;
+  }
+
+  .szkolenie__opis {
+    display: grid;
+    gap: var(--o-3);
+    justify-items: start;
+  }
+
+  .szkolenie__dane {
+    width: 100%;
+    border-top: var(--linia);
+  }
+
+  .szkolenie__dane div {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .szkolenie__dane dt {
+    color: var(--tusz-2);
+  }
+
+  .szkolenie__dane dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .szkolenie__dane .przypis {
+    font-weight: 400;
+  }
+
+  .szkolenie__program {
+    margin-top: var(--o-3);
+    gap: 0;
+    border-top: 1px solid var(--dym);
+  }
+
+  .szkolenie__program li {
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .szkolenie__program li::before {
+    top: calc(0.8rem + 0.42em);
+  }
+
+  .szkolenie__uwaga {
+    margin-top: var(--o-2);
+  }
+
+  /* kroki – prawdziwa kolejność, stąd numeracja */
+  .kroki {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--o-3);
+    counter-reset: krok;
+  }
+
+  .kroki li {
+    counter-increment: krok;
+    padding-top: var(--o-2);
+    border-top: 2px solid var(--tusz);
+  }
+
+  .kroki li::before {
+    content: counter(krok);
+    display: block;
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: var(--t-2xl);
+    line-height: 1;
+    color: var(--czerwien);
+    margin-bottom: 0.5rem;
+  }
+
+  .kroki h3 {
+    font-size: var(--t-l);
+  }
+
+  .kroki p {
+    margin-top: 0.4rem;
+    color: var(--tusz-2);
+    font-size: var(--t-s);
+    line-height: 1.5;
+  }
+
+  @media (min-width: 40rem) {
+    .kroki {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--o-4);
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .kroki {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .koniec {
+    display: grid;
+    gap: var(--o-3);
+    justify-items: start;
+  }
+</style>

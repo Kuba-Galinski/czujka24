@@ -1,0 +1,124 @@
+---
+import { adres, firma, linkEmail, linkTelefon, linkWhatsapp, nawigacja } from '../config';
+import Logo from './Logo.astro';
+---
+
+<footer class="stopka">
+  <div class="owijka stopka__siatka">
+    <div class="stopka__marka">
+      <Logo jasne />
+      <p>
+        Czujki dymu i czadu z montażem oraz szkolenia przeciwpożarowe. Prowadzi strażak OSP po certyfikowanych
+        szkoleniach CNBOP-PIB.
+      </p>
+      <p>
+        Dojazd do {firma.zasieg.promienKm} km od miejscowości {firma.zasieg.baza}: województwa {
+          firma.zasieg.wojewodztwa.join(', ')
+        }.
+      </p>
+    </div>
+
+    <nav aria-label="Stopka">
+      <h2>Na stronie</h2>
+      <ul>
+        {
+          nawigacja.map((pozycja) => (
+            <li>
+              <a href={adres(pozycja.href)}>{pozycja.etykieta}</a>
+            </li>
+          ))
+        }
+        <li><a href={adres('wycena/')}>Wycena i kontakt</a></li>
+        <li><a href={adres('polityka-prywatnosci/')}>Polityka prywatności</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2>Kontakt</h2>
+      <ul>
+        <li><a class="stopka__telefon" href={linkTelefon}>{firma.telefonWyswietlany}</a></li>
+        <li><a href={linkEmail}>{firma.email}</a></li>
+        <li><a href={linkWhatsapp} rel="noopener">Napisz na WhatsAppie</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="owijka stopka__dol">
+    <p>© {new Date().getFullYear()} {firma.marka}</p>
+    <p>W razie pożaru lub podejrzenia zatrucia czadem dzwoń pod 112.</p>
+  </div>
+</footer>
+
+<style>
+  .stopka {
+    background: var(--tusz);
+    color: #e8edf0;
+    padding-block: var(--o-5) var(--o-3);
+    font-size: var(--t-s);
+  }
+
+  .stopka__siatka {
+    display: grid;
+    gap: var(--o-4);
+  }
+
+  @media (min-width: 52rem) {
+    .stopka__siatka {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr);
+      gap: var(--o-5);
+    }
+  }
+
+  .stopka__marka p {
+    margin-top: var(--o-2);
+    max-width: 30rem;
+    color: #c2ccd3;
+  }
+
+  .stopka h2 {
+    font-size: var(--t-l);
+    font-weight: 700;
+    margin-bottom: var(--o-2);
+  }
+
+  .stopka ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .stopka li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    text-decoration-color: #6b7883;
+  }
+
+  .stopka a:hover {
+    color: #fff;
+    text-decoration-color: #fff;
+  }
+
+  .stopka :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
+  .stopka__telefon {
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: var(--t-xl);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+  }
+
+  .stopka__dol {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    margin-top: var(--o-5);
+    padding-top: var(--o-3);
+    border-top: 1px solid #3a4651;
+    color: #c2ccd3;
+    font-size: var(--t-xs);
+  }
+</style>

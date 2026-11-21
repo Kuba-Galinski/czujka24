@@ -1,0 +1,163 @@
+---
+/**
+ * Schemat zasięgu: okrąg 100 km wokół Głogowa, miejscowości rozmieszczone
+ * według rzeczywistych współrzędnych (odwzorowanie równoodległościowe, północ u góry).
+ */
+import { firma } from '../config';
+
+const BAZA = { szer: 51.663, dl: 16.085 }; // Głogów
+const KM_NA_STOPIEN_SZER = 110.57;
+const KM_NA_STOPIEN_DL = 111.32 * Math.cos((BAZA.szer * Math.PI) / 180);
+
+// strona: po której stronie punktu stoi podpis – l(ewa), p(rawa, domyślnie), g(óra), d(ół), gl (góra-lewo)
+type Miejsce = { nazwa: string; szer: number; dl: number; strona?: 'l' | 'p' | 'g' | 'd' | 'gl'; baza?: boolean; glowne?: boolean };
+
+const miejsca: Miejsce[] = [
+  { nazwa: 'Głogów', szer: 51.663, dl: 16.085, baza: true },
+  { nazwa: 'Gaworzyce', szer: 51.628, dl: 15.882, baza: true, strona: 'gl' },
+  { nazwa: 'Polkowice', szer: 51.504, dl: 16.071, strona: 'l' },
+  { nazwa: 'Lubin', glowne: true, szer: 51.401, dl: 16.201 },
+  { nazwa: 'Legnica', glowne: true, szer: 51.207, dl: 16.155 },
+  { nazwa: 'Bolesławiec', szer: 51.264, dl: 15.569, strona: 'l' },
+  { nazwa: 'Żagań', szer: 51.618, dl: 15.315, strona: 'd' },
+  { nazwa: 'Żary', glowne: true, szer: 51.642, dl: 15.139, strona: 'l' },
+  { nazwa: 'Nowa Sól', szer: 51.803, dl: 15.717, strona: 'l' },
+  { nazwa: 'Zielona Góra', glowne: true, szer: 51.936, dl: 15.506, strona: 'l' },
+  { nazwa: 'Świebodzin', szer: 52.247, dl: 15.533, strona: 'l' },
+  { nazwa: 'Wolsztyn', szer: 52.115, dl: 16.117 },
+  { nazwa: 'Wschowa', szer: 51.807, dl: 16.317, strona: 'g' },
+  { nazwa: 'Leszno', glowne: true, szer: 51.842, dl: 16.575 },
+  { nazwa: 'Gostyń', szer: 51.879, dl: 17.012 },
+  { nazwa: 'Rawicz', szer: 51.609, dl: 16.858 },
+  { nazwa: 'Wrocław', glowne: true, szer: 51.108, dl: 17.038 },
+  { nazwa: 'Jawor', szer: 51.052, dl: 16.194, strona: 'l' },
+];
+
+const SKALA = 2.5; // px na km
+const punkty = miejsca.map((m) => {
+  const x = Math.round((m.dl - BAZA.dl) * KM_NA_STOPIEN_DL * SKALA * 10) / 10;
+  const y = Math.round(-(m.szer - BAZA.szer) * KM_NA_STOPIEN_SZER * SKALA * 10) / 10;
+  const strona = m.strona ?? 'p';
+  const odstep = m.baza ? 13 : 10;
+  const podpis = {
+    p: { x: x + odstep, y: y + 5, kotwica: 'start' },
+    l: { x: x - odstep, y: y + 5, kotwica: 'end' },
+    g: { x, y: y - odstep - 2, kotwica: 'middle' },
+    d: { x, y: y + odstep + 12, kotwica: 'middle' },
+    gl: { x: x - 4, y: y - odstep - 2, kotwica: 'end' },
+  }[strona];
+  return { ...m, x, y, podpis };
+});
+
+const R = firma.zasieg.promienKm * SKALA;
+const POLE = R + 62;
+---
+
+<figure class="zasieg">
+  <svg viewBox={`${-POLE - 30} ${-POLE} ${2 * POLE + 60} ${2 * POLE}`} role="img" aria-labelledby="zasieg-tytul">
+    <title id="zasieg-tytul">
+      Zasięg dojazdu: {firma.zasieg.promienKm} km od Głogowa i Gaworzyc, m.in. {
+        punkty
+          .filter((p) => !p.baza)
+          .map((p) => p.nazwa)
+          .join(', ')
+      }
+    </title>
+
+    <circle r={R} class="zasieg__obszar"></circle>
+    <circle r={R / 2} class="zasieg__pierscien"></circle>
+    <path d={`M${-R - 14} 0H${R + 14}M0 ${-R - 14}V${R + 14}`} class="zasieg__osie"></path>
+
+    <text class="zasieg__km" x={R * 0.5 * 0.71 + 6} y={-R * 0.5 * 0.71 - 6}>50 km</text>
+    <text class="zasieg__km" x={R * 0.71 + 6} y={-R * 0.71 - 6}>100 km</text>
+    <text class="zasieg__polnoc" x="0" y={-R - 24} text-anchor="middle">N</text>
+
+    {
+      punkty.map((p) => (
+        <g class:list={['zasieg__miejsce', { 'zasieg__miejsce--baza': p.baza, 'zasieg__miejsce--poboczne': !p.baza && !p.glowne }]}>
+          <circle cx={p.x} cy={p.y} r={p.baza ? 6 : 3.500} />
+          <text x={p.podpis.x} y={p.podpis.y} text-anchor={p.podpis.kotwica}>
+            {p.nazwa}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+</figure>
+
+<style>
+  .zasieg svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .zasieg__obszar {
+    fill: rgb(255 255 255 / 0.06);
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
+  .zasieg__pierscien {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.45);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 6;
+  }
+
+  .zasieg__osie {
+    stroke: rgb(255 255 255 / 0.18);
+    stroke-width: 1;
+  }
+
+  .zasieg__km,
+  .zasieg__polnoc {
+    font-family: var(--kroj);
+    font-size: 14px;
+    font-weight: 600;
+    fill: #c3cfdc;
+  }
+
+  .zasieg__miejsce circle {
+    fill: #fff;
+  }
+
+  .zasieg__miejsce text {
+    font-family: var(--kroj);
+    font-size: 16px;
+    font-weight: 500;
+    fill: #fff;
+    paint-order: stroke;
+    stroke: var(--granat);
+    stroke-width: 4px;
+  }
+
+  .zasieg__miejsce--baza circle {
+    fill: #ff5a52;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
+  .zasieg__miejsce--baza text {
+    font-family: var(--kroj-waski);
+    font-size: 21px;
+    font-weight: 800;
+  }
+
+  /* wąski ekran: rysunek jest mały, więc zostają tylko główne podpisy, powiększone */
+  @media (max-width: 40rem) {
+    .zasieg__miejsce--poboczne text {
+      display: none;
+    }
+
+    .zasieg__miejsce text,
+    .zasieg__km,
+    .zasieg__polnoc {
+      font-size: 24px;
+    }
+
+    .zasieg__miejsce--baza text {
+      font-size: 30px;
+    }
+  }
+</style>

@@ -1,0 +1,210 @@
+---
+import { adres, firma, linkTelefon, nawigacja } from '../config';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const biezaca = Astro.url.pathname;
+const czyAktywna = (href: string) => biezaca.startsWith(adres(href));
+---
+
+<header class="naglowek">
+  <div class="owijka naglowek__wiersz">
+    <Logo />
+
+    <button class="naglowek__menu" type="button" aria-expanded="false" aria-controls="nawigacja" data-menu-przycisk>
+      <span data-menu-otworz><Icon nazwa="menu" /></span>
+      <span data-menu-zamknij hidden><Icon nazwa="zamknij" /></span>
+      <span>Menu</span>
+    </button>
+
+    <nav class="naglowek__nawigacja" id="nawigacja" aria-label="Główna" data-menu>
+      <ul>
+        {
+          nawigacja.map((pozycja) => (
+            <li>
+              <a href={adres(pozycja.href)} aria-current={czyAktywna(pozycja.href) ? 'page' : undefined}>
+                {pozycja.etykieta}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="naglowek__akcje">
+        <a class="naglowek__telefon" href={linkTelefon}>
+          <Icon nazwa="telefon" rozmiar={20} />
+          <span>{firma.telefonWyswietlany}</span>
+        </a>
+        <a class="przycisk naglowek__cta" href={adres('wycena/')}>Policz wycenę</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const przycisk = document.querySelector<HTMLButtonElement>('[data-menu-przycisk]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (przycisk && menu) {
+    const ustaw = (otwarte: boolean) => {
+      przycisk.setAttribute('aria-expanded', String(otwarte));
+      menu.dataset.otwarte = String(otwarte);
+      przycisk.querySelector<HTMLElement>('[data-menu-otworz]')!.hidden = otwarte;
+      przycisk.querySelector<HTMLElement>('[data-menu-zamknij]')!.hidden = !otwarte;
+    };
+
+    przycisk.addEventListener('click', () => ustaw(przycisk.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (zdarzenie) => {
+      if (zdarzenie.key === 'Escape' && przycisk.getAttribute('aria-expanded') === 'true') {
+        ustaw(false);
+        przycisk.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .naglowek {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--sufit);
+    border-bottom: var(--linia);
+  }
+
+  .naglowek__wiersz {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--o-3);
+    min-height: 4.5rem;
+    flex-wrap: wrap;
+  }
+
+  .naglowek__menu {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: var(--linia);
+    border-radius: var(--r);
+    background: var(--papier);
+    color: var(--tusz);
+    font: inherit;
+    font-weight: 700;
+    font-size: var(--t-s);
+    cursor: pointer;
+  }
+
+  .naglowek__menu span {
+    display: inline-flex;
+  }
+
+  .naglowek__menu span[hidden] {
+    display: none;
+  }
+
+  .naglowek__nawigacja {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.4vw, 2.25rem);
+  }
+
+  .naglowek__nawigacja ul {
+    display: flex;
+    gap: clamp(1rem, 2.2vw, 2rem);
+    padding: 0;
+    list-style: none;
+  }
+
+  .naglowek__nawigacja ul a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-size: var(--t-s);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+  }
+
+  .naglowek__nawigacja ul a:hover {
+    color: var(--tusz);
+    border-bottom-color: var(--dym);
+  }
+
+  .naglowek__nawigacja ul a[aria-current='page'] {
+    border-bottom-color: var(--czerwien);
+  }
+
+  .naglowek__akcje {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .naglowek__telefon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.75rem;
+    font-weight: 700;
+    font-size: var(--t-m);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .naglowek__cta {
+    min-height: 2.75rem;
+    padding-block: 0.45rem;
+    font-size: var(--t-s);
+  }
+
+  @media (max-width: 68rem) {
+    .naglowek__nawigacja ul a {
+      font-size: var(--t-xs);
+    }
+  }
+
+  @media (max-width: 61.99rem) {
+    :global(html.js) .naglowek__menu {
+      display: inline-flex;
+    }
+
+    .naglowek__nawigacja {
+      flex-basis: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--o-2);
+      padding-bottom: var(--o-3);
+    }
+
+    :global(html.js) .naglowek__nawigacja:not([data-otwarte='true']) {
+      display: none;
+    }
+
+    .naglowek__nawigacja ul {
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--dym);
+    }
+
+    .naglowek__nawigacja ul a {
+      display: flex;
+      min-height: 3.25rem;
+      font-size: var(--t-m);
+      border-bottom: 1px solid var(--dym);
+    }
+
+    .naglowek__nawigacja ul a[aria-current='page'] {
+      border-bottom-color: var(--dym);
+      box-shadow: inset 4px 0 0 var(--czerwien);
+      padding-left: 0.9rem;
+    }
+
+    .naglowek__akcje {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  }
+</style>

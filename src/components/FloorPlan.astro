@@ -1,0 +1,377 @@
+---
+/**
+ * Rzut mieszkania z rozmieszczeniem czujek – główny element strony.
+ * Rysunek (SVG) jest dekoracją; treść niosą przyciski nałożone na rzut i lista opisów pod nim.
+ * Bez JavaScriptu widać wszystkie opisy naraz.
+ */
+type Punkt = {
+  id: string;
+  rodzaj: 'dym' | 'czad' | 'brak';
+  x: number;
+  y: number;
+  miejsce: string;
+  opis: string;
+};
+
+const SZER = 720;
+const WYS = 520;
+
+const punkty: Punkt[] = [
+  {
+    id: 'korytarz',
+    rodzaj: 'dym',
+    x: 340,
+    y: 232,
+    miejsce: 'Korytarz przy sypialniach',
+    opis: 'Pierwsza czujka dymu w każdym mieszkaniu. Dym z dowolnego pokoju trafia na korytarz, a alarm stąd słychać w sypialniach także przy zamkniętych drzwiach.',
+  },
+  {
+    id: 'sypialnia',
+    rodzaj: 'dym',
+    x: 128,
+    y: 138,
+    miejsce: 'Sypialnia',
+    opis: 'We śnie nie czuć dymu. Czujka na środku sufitu budzi, zanim dym opadnie na wysokość poduszki.',
+  },
+  {
+    id: 'pokoj-dziecka',
+    rodzaj: 'dym',
+    x: 150,
+    y: 350,
+    miejsce: 'Pokój dziecka',
+    opis: 'Ładowarki, lampki i zabawki na baterie pracują tu także w nocy. Własna czujka w pokoju skraca czas do alarmu.',
+  },
+  {
+    id: 'salon',
+    rodzaj: 'dym',
+    x: 520,
+    y: 170,
+    miejsce: 'Salon',
+    opis: 'Telewizor, listwy zasilające, świece, choinka. Czujka na środku sufitu, z dala od lamp i nawiewów.',
+  },
+  {
+    id: 'kuchnia',
+    rodzaj: 'czad',
+    x: 672,
+    y: 338,
+    miejsce: 'Kuchnia z kotłem gazowym',
+    opis: 'Czujka czadu wisi na ścianie, 1,5–1,9 m nad podłogą i 1–3 m od kotła. Nie przy oknie i nie przy kratce wentylacyjnej.',
+  },
+  {
+    id: 'lazienka',
+    rodzaj: 'brak',
+    x: 482,
+    y: 448,
+    miejsce: 'Łazienka',
+    opis: 'Tu czujki dymu nie montuję – para wodna wywołuje fałszywe alarmy. Jeśli w łazience wisi piecyk gazowy, potrzebna jest czujka czadu.',
+  },
+];
+
+const etykietaRodzaju = { dym: 'czujka dymu', czad: 'czujka czadu', brak: 'bez czujki dymu' } as const;
+const domyslny = punkty[0].id;
+---
+
+<figure class="plan" data-plan>
+  <div class="plan__rysunek">
+    <svg viewBox={`0 0 ${SZER} ${WYS}`} role="img" aria-label="Rzut trzypokojowego mieszkania z zaznaczonymi miejscami montażu czujek">
+      <rect x="20" y="20" width="680" height="480" fill="var(--papier)"></rect>
+
+      <!-- wyposażenie -->
+      <g fill="none" stroke="var(--dym)" stroke-width="2">
+        <rect x="172" y="36" width="92" height="126"></rect>
+        <path d="M172 66h92"></path>
+        <rect x="36" y="412" width="126" height="72"></rect>
+        <path d="M66 412v72"></path>
+        <rect x="612" y="48" width="62" height="170"></rect>
+        <path d="M612 48h18v170h-18"></path>
+        <rect x="414" y="334" width="112" height="42"></rect>
+        <rect x="668" y="372" width="24" height="120"></rect>
+        <circle cx="680" cy="440" r="7"></circle>
+        <circle cx="680" cy="468" r="7"></circle>
+      </g>
+
+      <!-- kocioł gazowy -->
+      <rect x="546" y="424" width="24" height="40" fill="var(--dym-jasny)" stroke="var(--tusz)" stroke-width="2"></rect>
+      <path d="M551 436h14M551 444h14M551 452h14" stroke="var(--tusz)" stroke-width="1.5"></path>
+
+      <!-- odległość kocioł → czujka czadu -->
+      <g stroke="var(--lcd)" stroke-width="1.5" fill="none">
+        <path d="M572 430 656 348" stroke-dasharray="5 4"></path>
+        <path d="M568 426l8 8M652 344l8 8"></path>
+      </g>
+      <text class="plan__wymiar" x="622" y="404">1–3 m</text>
+
+      <!-- ściany -->
+      <g fill="none" stroke="var(--tusz)" stroke-linecap="square">
+        <path stroke-width="8" d="M20 20H700V500H370M310 500H20V20"></path>
+        <g stroke-width="5">
+          <path d="M280 20V170M280 230V290M280 350V500"></path>
+          <path d="M20 250H280"></path>
+          <path d="M400 20V110M400 200V380M400 440V500"></path>
+          <path d="M400 320H560M640 320H700"></path>
+          <path d="M540 320V500"></path>
+        </g>
+      </g>
+
+      <!-- okna -->
+      <g stroke="var(--papier)" stroke-width="5">
+        <path d="M20 80V170M20 330V400M470 20H640"></path>
+      </g>
+      <g stroke="var(--tusz)" stroke-width="1.5">
+        <path d="M20 80V170M20 330V400M470 20H640"></path>
+      </g>
+
+      <!-- drzwi -->
+      <g fill="none" stroke="var(--tusz)" stroke-width="1.5">
+        <path d="M280 170H220A60 60 0 0 0 280 230"></path>
+        <path d="M280 350H220A60 60 0 0 1 280 290"></path>
+        <path d="M400 380H460A60 60 0 0 1 400 440"></path>
+        <path d="M310 500V440A60 60 0 0 1 370 500"></path>
+      </g>
+
+      <!-- nazwy pomieszczeń -->
+      <g class="plan__nazwy">
+        <text x="36" y="226">sypialnia</text>
+        <text x="36" y="282">pokój dziecka</text>
+        <text x="340" y="56" text-anchor="middle">korytarz</text>
+        <text x="418" y="300">salon</text>
+        <text x="414" y="488">łazienka</text>
+        <text x="582" y="488">kuchnia</text>
+        <text x="340" y="486" text-anchor="middle">wejście</text>
+      </g>
+
+      <!-- czujki -->
+      {
+        punkty.map((p, i) =>
+          p.rodzaj === 'dym' ? (
+            <g>
+              <circle cx={p.x} cy={p.y} r="15" fill="var(--papier)" stroke="var(--tusz)" stroke-width="2.5" />
+              <circle cx={p.x} cy={p.y} r="9" fill="none" stroke="var(--tusz)" stroke-width="1.5" stroke-dasharray="3.600 2.050" />
+              <circle class="plan__dioda" cx={p.x} cy={p.y} r="3.400" fill="var(--czerwien)" style={`animation-delay:${i * 0.9}s`} />
+            </g>
+          ) : p.rodzaj === 'czad' ? (
+            <g>
+              <rect x={p.x - 14} y={p.y - 11} width="28" height="22" rx="3" fill="var(--papier)" stroke="var(--tusz)" stroke-width="2.5" />
+              <rect x={p.x - 9} y={p.y - 6} width="18" height="9" fill="var(--lcd-tlo)" stroke="var(--lcd)" stroke-width="1.5" />
+              <circle cx={p.x + 6} cy={p.y + 6.500} r="1.800" fill="var(--lcd)" />
+            </g>
+          ) : (
+            <g stroke="var(--tusz-2)" stroke-width="2" fill="none">
+              <circle cx={p.x} cy={p.y} r="15" stroke-dasharray="4 4" fill="var(--papier)" />
+              <path d={`M${p.x - 6} ${p.y - 6}l12 12M${p.x + 6} ${p.y - 6}l-12 12`} />
+            </g>
+          ),
+        )
+      }
+    </svg>
+
+    {
+      punkty.map((p) => (
+        <button
+          class="plan__punkt"
+          type="button"
+          style={`left:${(p.x / SZER) * 100}%;top:${(p.y / WYS) * 100}%`}
+          aria-pressed={p.id === domyslny ? 'true' : 'false'}
+          aria-controls={`plan-${p.id}`}
+          data-punkt={p.id}
+        >
+          <span class="tylko-czytnik">
+            {p.miejsce}: {etykietaRodzaju[p.rodzaj]}
+          </span>
+        </button>
+      ))
+    }
+  </div>
+
+  <figcaption class="plan__opisy">
+    <p class="plan__podpowiedz">Wybierz punkt na rzucie, żeby zobaczyć, dlaczego czujka jest właśnie tam.</p>
+    <ul>
+      {
+        punkty.map((p) => (
+          <li id={`plan-${p.id}`} data-opis={p.id} data-aktywny={p.id === domyslny ? 'true' : 'false'}>
+            <span class:list={['plan__znacznik', `plan__znacznik--${p.rodzaj}`]}>{etykietaRodzaju[p.rodzaj]}</span>
+            <strong>{p.miejsce}</strong>
+            <span>{p.opis}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-plan]').forEach((plan) => {
+    const przyciski = plan.querySelectorAll<HTMLButtonElement>('[data-punkt]');
+    const opisy = plan.querySelectorAll<HTMLElement>('[data-opis]');
+
+    const wybierz = (id: string) => {
+      przyciski.forEach((p) => p.setAttribute('aria-pressed', String(p.dataset.punkt === id)));
+      opisy.forEach((o) => (o.dataset.aktywny = String(o.dataset.opis === id)));
+    };
+
+    przyciski.forEach((przycisk) => {
+      const id = przycisk.dataset.punkt!;
+      przycisk.addEventListener('click', () => wybierz(id));
+      przycisk.addEventListener('pointerenter', (zdarzenie) => {
+        if (zdarzenie.pointerType === 'mouse') wybierz(id);
+      });
+    });
+  });
+</script>
+
+<style>
+  .plan {
+    display: grid;
+    gap: var(--o-2);
+  }
+
+  .plan__rysunek {
+    position: relative;
+  }
+
+  .plan__rysunek svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .plan__nazwy text {
+    font-family: var(--kroj);
+    font-size: 16px;
+    font-weight: 500;
+    fill: var(--tusz-2);
+  }
+
+  .plan__wymiar {
+    font-family: var(--kroj);
+    font-size: 15px;
+    font-weight: 700;
+    fill: var(--lcd);
+    text-anchor: middle;
+    paint-order: stroke;
+    stroke: var(--papier);
+    stroke-width: 5px;
+  }
+
+  .plan__dioda {
+    animation: mrugniecie 5.4s ease-in-out infinite;
+  }
+
+  @keyframes mrugniecie {
+    0%,
+    82%,
+    100% {
+      opacity: 1;
+    }
+    88% {
+      opacity: 0.15;
+    }
+    94% {
+      opacity: 1;
+    }
+  }
+
+  .plan__punkt {
+    position: absolute;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    border: 2.5px solid transparent;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color 140ms ease,
+      background-color 140ms ease;
+  }
+
+  .plan__punkt:hover {
+    border-color: var(--dym);
+  }
+
+  .plan__punkt[aria-pressed='true'] {
+    border-color: var(--czerwien);
+    background: color-mix(in srgb, var(--czerwien) 9%, transparent);
+  }
+
+  .plan__opisy ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--o-2);
+  }
+
+  .plan__opisy li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 1rem 1.15rem;
+    background: var(--papier);
+    border: var(--linia);
+    border-radius: var(--r);
+    font-size: var(--t-s);
+    line-height: 1.45;
+  }
+
+  .plan__opisy li strong {
+    font-family: var(--kroj-waski);
+    font-size: var(--t-l);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  :global(html.js) .plan__opisy li[data-aktywny='false'] {
+    display: none;
+  }
+
+  .plan__opisy li {
+    min-height: 9.5rem;
+    align-content: start;
+  }
+
+  .plan__podpowiedz {
+    display: none;
+    margin-bottom: 0.6rem;
+    font-size: var(--t-xs);
+    color: var(--tusz-2);
+  }
+
+  :global(html.js) .plan__podpowiedz {
+    display: block;
+  }
+
+  .plan__znacznik {
+    justify-self: start;
+    font-size: var(--t-xs);
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.25rem;
+  }
+
+  .plan__znacznik--dym {
+    background: var(--ostrzezenie-tlo);
+    color: var(--czerwien-ciemna);
+  }
+
+  .plan__znacznik--czad {
+    background: var(--lcd-tlo);
+    color: var(--lcd);
+  }
+
+  .plan__znacznik--brak {
+    background: var(--dym-jasny);
+    color: var(--tusz-2);
+  }
+
+  @media (max-width: 30rem) {
+    .plan__punkt {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .plan__nazwy text {
+      font-size: 19px;
+    }
+  }
+</style>

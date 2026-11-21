@@ -1,0 +1,68 @@
+---
+import { firma, linkEmail } from '../config';
+import Base from '../layouts/Base.astro';
+
+const a = firma.administrator;
+const formularzWTle = Boolean(firma.web3formsKlucz);
+---
+
+<Base tytul="Polityka prywatności" opis="Jakie dane zbiera strona czujka24.pl, po co i jak długo są przechowywane.">
+  <section class="czolo">
+    <div class="owijka">
+      <h1>Polityka prywatności</h1>
+      <p class="wstep">Krótko: dane z formularza służą tylko do odpowiedzi na Twoje zapytanie.</p>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
+    <div class="owijka proza">
+      {
+        firma.wersjaRobocza && (
+          <p class="przypis">
+            Wersja robocza – przed publikacją trzeba uzupełnić dane administratora i dać tekst do sprawdzenia
+            osobie znającej RODO.
+          </p>
+        )
+      }
+
+      <h2>Kto jest administratorem danych</h2>
+      <p>
+        {a.nazwa}, {a.adres}, NIP {a.nip}. Kontakt w sprawach danych osobowych: <a href={linkEmail}>{firma.email}</a>.
+      </p>
+
+      <h2>Jakie dane i po co</h2>
+      <p>
+        Gdy wysyłasz zapytanie przez formularz, piszesz e-mail, dzwonisz albo piszesz na WhatsAppie, przetwarzam
+        dane, które podajesz: imię i nazwisko lub nazwę, telefon, e-mail, miejscowość i treść wiadomości. Służą
+        one do odpowiedzi na zapytanie, przygotowania wyceny i – jeśli dojdzie do współpracy – wykonania usługi
+        (art. 6 ust. 1 lit. b i f RODO).
+      </p>
+
+      <h2>Jak długo</h2>
+      <p>
+        Zapytania, po których nie doszło do współpracy, usuwam najpóźniej po 12 miesiącach. Dane związane
+        z wykonaną usługą przechowuję tak długo, jak wymagają tego przepisy podatkowe i okres rękojmi.
+      </p>
+
+      <h2>Komu dane są przekazywane</h2>
+      <p>
+        Dane nie są sprzedawane ani udostępniane w celach marketingowych. Dostęp do nich mają wyłącznie dostawcy
+        usług, bez których strona i poczta nie działają: hosting strony (GitHub Pages), poczta elektroniczna
+        {formularzWTle && ' oraz usługa obsługująca formularz (Web3Forms)'}.
+      </p>
+
+      <h2>Pliki cookies i statystyki</h2>
+      <p>
+        Strona nie używa plików cookies, narzędzi analitycznych ani reklam. Czcionki są ładowane z tego samego
+        serwera co strona.
+      </p>
+
+      <h2>Twoje prawa</h2>
+      <p>
+        Możesz zażądać dostępu do swoich danych, ich poprawienia, usunięcia lub ograniczenia przetwarzania, a także
+        wnieść sprzeciw. Wystarczy wiadomość na <a href={linkEmail}>{firma.email}</a>. Przysługuje Ci też skarga
+        do Prezesa Urzędu Ochrony Danych Osobowych.
+      </p>
+    </div>
+  </section>
+</Base>
