@@ -10,7 +10,7 @@ export const firma = {
    * true  = strona ma baner "wersja robocza" i jest ukryta przed wyszukiwarkami (noindex).
    * false = strona publiczna. Przełącz dopiero po uzupełnieniu cennika i przejrzeniu treści.
    */
-  wersjaRobocza: true,
+  wersjaRobocza: false,
 
   // Numer w formacie międzynarodowym bez spacji oraz wersja do wyświetlania.
   telefon: '+48721096734',

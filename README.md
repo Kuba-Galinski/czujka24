@@ -27,18 +27,18 @@ npm run build    # gotowa strona w folderze dist/
 | `public/img/`                        | zdjęcia (nazwy plików: patrz `docs/prompty-gemini.md`)           |
 | `docs/prompty-gemini.md`             | prompty do wygenerowania logo i zdjęć                            |
 
-## Przed publikacją
+## Stan strony
 
-Strona startuje w trybie roboczym: ma żółty pasek u góry i jest ukryta przed wyszukiwarkami.
+Strona jest opublikowana: bez paska roboczego, otwarta dla wyszukiwarek (`robots.txt`, `sitemap-index.xml`).
+Tryb roboczy wraca po ustawieniu `wersjaRobocza: true` w `src/config.ts` – strona dostaje wtedy żółty pasek
+i blokadę indeksowania.
 
-1. `src/config.ts` – opcjonalnie NIP (polityka prywatności) i profil Messengera.
-2. Przeczytaj treści – szczególnie program szkoleń i sekcję „Kto przyjedzie do Twojego domu”.
-3. Daj politykę prywatności do sprawdzenia.
-4. W `src/config.ts` ustaw `wersjaRobocza: false`.
+Wpisane: cennik w `src/data/cennik.ts`, telefon, WhatsApp i dane administratora w `src/config.ts`,
+skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapytań przez
+[Web3Forms](https://web3forms.com) – konto na `kontakt@czujka24.pl`, darmowy plan do 250 zgłoszeń
+miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
 
-Już zrobione: cennik w `src/data/cennik.ts`, telefon, WhatsApp i dane administratora w `src/config.ts`, skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapytań
-przez [Web3Forms](https://web3forms.com) – konto na `kontakt@czujka24.pl`, darmowy plan
-do 250 zgłoszeń miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
+Opcjonalnie do uzupełnienia w `src/config.ts`: NIP (pokaże się w polityce prywatności) i profil Messengera.
 
 ## Wdrożenie
 
