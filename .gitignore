@@ -18,3 +18,6 @@ npm-debug.log*
 
 # lokalne skille Claude Code (instalowane osobno, patrz README)
 .claude/
+
+# oryginały grafik z Gemini (na stronę trafiają przycięte wersje z public/img)
+assets/

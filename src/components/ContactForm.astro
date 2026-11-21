@@ -100,7 +100,7 @@ import { adres, firma } from '../config';
     const pulapka = pole('botcheck');
 
     const reguly: [HTMLInputElement | HTMLTextAreaElement, () => string][] = [
-      [imie, () => (imie.value.trim() ? '' : 'Wpisz imię i nazwisko albo nazwę firmy lub wspólnoty.')],
+      [imie, () => (imie.value.trim() ? '' : 'Wpisz imię i nazwisko albo nazwę wspólnoty.')],
       [
         telefon,
         () => {

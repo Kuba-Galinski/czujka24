@@ -40,22 +40,6 @@ const szkolenia = [
     cena: cennik.szkolenie.wspolnota,
     dla: 'wspolnota',
   },
-  {
-    id: 'firmy',
-    tytul: 'Dla firm i instytucji',
-    dlaKogo: 'Dla biur, sklepów, zakładów usługowych, szkół, przedszkoli i urzędów. Program dopasowuję do budynku, w którym pracujecie.',
-    program: [
-      'Pierwsza reakcja na pożar w miejscu pracy – kto co robi',
-      'Praktyczne użycie gaśnic: proszkowej, śniegowej i pianowej',
-      'Ewakuacja pracowników i klientów, liczenie ludzi na miejscu zbiórki',
-      'Najczęstsze przyczyny pożarów w biurach i lokalach: ładowarki, listwy, zaplecza kuchenne',
-      'Przejście po Waszym obiekcie: drogi ewakuacyjne, oznakowanie, podręczny sprzęt',
-    ],
-    czas: 'około 2–3 godzin, w siedzibie firmy',
-    cena: cennik.szkolenie.firma,
-    dla: 'firma',
-    uwaga: 'To szkolenie praktyczne. Uzupełnia obowiązkowe szkolenia BHP, ale ich nie zastępuje.',
-  },
 ];
 
 const przebieg = [
@@ -79,7 +63,7 @@ const przebieg = [
 ---
 
 <Base
-  tytul="Szkolenia przeciwpożarowe dla mieszkańców, wspólnot i firm"
+  tytul="Szkolenia przeciwpożarowe dla mieszkańców i wspólnot"
   opis="Praktyczne szkolenia przeciwpożarowe prowadzone przez strażaka OSP: reakcja na alarm czujki, użycie gaśnicy, ewakuacja. Dolnośląskie, lubuskie, wielkopolskie."
 >
   <section class="czolo">
@@ -94,7 +78,7 @@ const przebieg = [
           {szkolenia.map((s) => <a href={`#${s.id}`}>{s.tytul}</a>)}
         </nav>
       </div>
-      <Photo plik="szkolenie.webp" alt="Uczestnicy szkolenia ćwiczą użycie gaśnicy" szer={960} wys={1200} pilne />
+      <Photo plik="szkolenie.webp" alt="Szkolenie dla mieszkańców: prezentacja czujki dymu z mikrofonem w ręku" szer={960} wys={1200} pilne />
     </div>
   </section>
 
@@ -127,14 +111,13 @@ const przebieg = [
             <ul class="lista szkolenie__program">
               {s.program.map((punkt) => <li>{punkt}</li>)}
             </ul>
-            {s.uwaga && <p class="przypis szkolenie__uwaga">{s.uwaga}</p>}
           </div>
         </div>
       </section>
     ))
   }
 
-  <section class="sekcja">
+  <section class="sekcja sekcja--papier">
     <div class="owijka">
       <div class="sekcja__naglowek">
         <h2>Jak wygląda współpraca</h2>
@@ -244,10 +227,6 @@ const przebieg = [
 
   .szkolenie__program li::before {
     top: calc(0.8rem + 0.42em);
-  }
-
-  .szkolenie__uwaga {
-    margin-top: var(--o-2);
   }
 
   /* kroki – prawdziwa kolejność, stąd numeracja */

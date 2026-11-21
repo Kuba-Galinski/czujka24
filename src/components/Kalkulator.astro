@@ -17,7 +17,6 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
       <div class="przelacznik">
         <label><input type="radio" name="dla" value="dom" checked /><span>Dom lub mieszkanie</span></label>
         <label><input type="radio" name="dla" value="wspolnota" /><span>Wspólnota, spółdzielnia</span></label>
-        <label><input type="radio" name="dla" value="firma" /><span>Firma, instytucja</span></label>
       </div>
     </fieldset>
 
@@ -89,7 +88,6 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
       <div><dt>Montaż jednej czujki</dt><dd>od {zl(cennik.montazSztuka)}</dd></div>
       <div><dt>Szkolenie dla domowników</dt><dd>od {zl(cennik.szkolenie.dom)}</dd></div>
       <div><dt>Szkolenie dla wspólnoty</dt><dd>od {zl(cennik.szkolenie.wspolnota)}</dd></div>
-      <div><dt>Szkolenie dla firmy</dt><dd>od {zl(cennik.szkolenie.firma)}</dd></div>
       {
         cennik.rabaty.map((r) => (
           <div>
@@ -105,16 +103,14 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
 <script>
   import type { Cennik } from '../data/cennik';
 
-  type Dla = 'dom' | 'wspolnota' | 'firma';
+  type Dla = 'dom' | 'wspolnota';
   const DOMYSLNE: Record<Dla, { dym: number; czad: number }> = {
     dom: { dym: 3, czad: 1 },
     wspolnota: { dym: 40, czad: 10 },
-    firma: { dym: 6, czad: 1 },
   };
   const NAZWY: Record<Dla, string> = {
     dom: 'dom lub mieszkanie',
     wspolnota: 'wspólnota lub spółdzielnia',
-    firma: 'firma lub instytucja',
   };
 
   const zl = (kwota: number) => `${Math.round(kwota).toLocaleString('pl-PL')} zł`;
@@ -333,9 +329,9 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
     outline-offset: 3px;
   }
 
-  @media (min-width: 40rem) {
+  @media (min-width: 34rem) {
     .przelacznik {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 

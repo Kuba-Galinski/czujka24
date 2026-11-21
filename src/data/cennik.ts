@@ -22,7 +22,6 @@ export const cennik = {
   szkolenie: {
     dom: 300,
     wspolnota: 600,
-    firma: 800,
   },
 
   // Rabat ilościowy na czujki i montaż: od ilu sztuk łącznie i ile procent.

@@ -18,7 +18,8 @@ Każdy prompt wklej w całości. Jeśli wynik odbiega od opisu, dopisz poprawkę
 
 **Czego unikać na zdjęciach**
 
-- Twarzy. Wygenerowana twarz udaje konkretną osobę, której nie ma – kadruj dłonie, plecy, sylwetki.
+- Wymyślonych twarzy. Wygenerowana twarz udaje konkretną osobę, której nie ma – kadruj dłonie, plecy,
+  sylwetki. Wyjątek: zdjęcie 2b, które powstaje z prawdziwych zdjęć właściciela.
 - Herbów i emblematów PSP/OSP, naszywek, numerów operacyjnych. To znaki prawnie chronione.
 - Napisów i logotypów na urządzeniach – generator i tak je przekręca.
 - Ognia i dramatycznego dymu. Strona nie straszy, tylko pokazuje spokojną, fachową robotę.
@@ -115,16 +116,87 @@ no text or logos on clothing or on the device. Shallow depth of field, 35 mm len
 
 Proporcje 4:5 (pion), docelowo 960 × 1200 px.
 
+To zdjęcie powstaje na podstawie prawdziwych zdjęć właściciela. Żeby twarz wyszła podobna:
+
+- Zacznij **nową rozmowę** z Gemini. W starej kolejne poprawki oddalają twarz od oryginału.
+- Dołącz 2–3 zdjęcia, nie więcej. Jedno musi być ostrym zbliżeniem twarzy na wprost, w dziennym świetle,
+  bez okularów przeciwsłonecznych i czapki. Zdjęcia słabej jakości pogarszają wynik – lepiej je pominąć.
+- Jeśli po dwóch próbach twarz nadal odbiega, użyj wariantu dwuetapowego opisanego pod promptem.
+
 ```text
-Documentary photo, vertical 4:5. A small practical fire-safety training outdoors in the courtyard of a
-Polish housing estate, overcast daylight. Seen from behind: an adult participant in everyday clothes
-holds a red powder fire extinguisher with both hands and aims the hose low at a small metal training
-tray on the ground; a light cloud of white powder drifts away. Next to them, also from behind, stands an
-instructor in a plain dark navy jacket with no markings, pointing at the base of the tray. Two or three
-other residents watch from a few metres away, out of focus. Apartment blocks in the soft background.
-No faces visible, no real flames, no emblems or badges, no text. Muted colours, cool neutral white
-balance, the extinguisher is the only red element. 35 mm lens, realistic, calm, instructive mood.
+This is a photo edit of a real person, not the creation of a new one. The attached photos show the
+person who must appear in the image. Identity preservation is the single most important requirement,
+more important than anything else in this prompt.
+
+Reproduce this exact face with photographic accuracy: the same face shape and jawline, the same eyes,
+eyelids and eyebrows, the same nose, the same mouth and lips, the same ears, the same hairline, hair
+colour and haircut, the same facial hair or lack of it, the same skin tone, wrinkles, moles and other
+marks, the same apparent age and the same body build. Do not beautify, do not smooth the skin, do not
+make the person younger, slimmer or more symmetrical, do not blend the face with any other face.
+If any other instruction below conflicts with keeping the face identical, keep the face identical.
+
+Scene: a realistic documentary photo, vertical 4:5. This person is leading a home fire-safety talk for
+residents. Framing from the chest up, so the face is large in the frame, sharp and fully visible, lit
+by soft daylight from the front-left. The head is turned only slightly, close to the angle of the
+clearest reference photo, with a calm, friendly, speaking expression. Nothing covers the face.
+
+The right hand holds a black handheld microphone below the chin, not in front of the mouth. The left
+hand holds up a plain white round household smoke detector, about 10 cm wide, at shoulder height beside
+the face. Hands with five fingers each, natural grip.
+
+Clothing: a sand-coloured (light khaki-beige) firefighter station polo shirt with short sleeves, a
+buttoned placket and a collar, neat and well fitted. No text, no badges, no emblems, no patches.
+
+Room: a modern, bright, well-kept community meeting room after renovation: clean white walls, light
+wooden floor, large windows with daylight, modern upholstered chairs, a green potted plant in the
+background. Tidy and welcoming, nothing worn, old or shabby. No projector screen, no banners.
+
+Foreground, strongly out of focus: the backs of the heads and shoulders of four or five seated residents
+of different ages along the bottom edge. Background softly blurred.
+
+Cool neutral white balance, natural colours; the only red element is a tiny LED on the detector.
+Shallow depth of field, focus on the eyes, 85 mm portrait lens, eye-level camera. No text anywhere,
+no logos, no watermarks.
+
+Final check before rendering: compare the face with the attached photos and correct every difference.
 ```
+
+**Wariant dwuetapowy** – gdy twarz nadal się zmienia. Gemini trzyma podobieństwo dużo lepiej, kiedy
+najpierw robi sam portret, a dopiero potem dokłada scenę.
+
+Krok 1, w nowej rozmowie, ze zdjęciami w załączniku:
+
+```text
+Photo edit of a real person. Keep the face from the attached photos absolutely identical: same face
+shape, eyes, eyebrows, nose, mouth, ears, hairline, haircut, facial hair, skin tone, wrinkles, marks,
+age and build. Do not beautify, do not smooth the skin, do not change any feature.
+Change only two things: the clothing and the background. Dress the person in a sand-coloured (light
+khaki-beige) firefighter station polo shirt with short sleeves and a collar, no text, no badges, no
+emblems. Replace the background with plain light grey. Chest-up portrait, soft daylight, 85 mm lens,
+vertical 4:5.
+```
+
+Krok 2, w tej samej rozmowie, gdy portret jest podobny:
+
+```text
+Keep the person exactly as in the last image: the same face, the same expression, the same shirt.
+Do not regenerate or alter the face in any way. Only add the scene around them: a black handheld
+microphone in the right hand below the chin, a plain white round smoke detector about 10 cm wide held
+up in the left hand at shoulder height, and a modern, bright, well-kept community meeting room after
+renovation as the background (white walls, light wooden floor, large windows, modern chairs, a green
+plant), softly blurred. Along the bottom edge, strongly out of focus, the backs of the heads of four or
+five seated residents. Hands with five fingers each. No text, no logos. Vertical 4:5.
+```
+
+Poprawki, które najczęściej się przydają (wpisz jako kolejną wiadomość):
+
+- `Same image, but fix the hands: five fingers each, natural grip on the microphone and the detector.`
+- `Same image, but the smoke detector should be a plain white disc about 10 cm wide, no screen, no text.`
+- `Same image, but remove all text and emblems from the shirt.`
+
+Zdjęcie pokazuje prawdziwą osobę w scenie, która się nie wydarzyła. Dlatego słuchaczy jest kilku –
+bez tłumu i bez sceny, które sugerowałyby skalę większą niż w rzeczywistości. Po pierwszym prawdziwym
+szkoleniu warto podmienić je na fotografię z sali.
 
 ### 2c. `blok.webp` – nagłówek strony „Dla wspólnot i spółdzielni”
 
