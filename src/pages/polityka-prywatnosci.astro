@@ -1,5 +1,5 @@
 ---
-import { firma, linkEmail } from '../config';
+import { firma, linkEmail, linkTelefon } from '../config';
 import Base from '../layouts/Base.astro';
 
 const a = firma.administrator;
@@ -10,7 +10,10 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
   <section class="czolo">
     <div class="owijka">
       <h1>Polityka prywatności</h1>
-      <p class="wstep">Krótko: dane z formularza służą tylko do odpowiedzi na Twoje zapytanie.</p>
+      <p class="wstep">
+        Krótko: dane, które podajesz, służą do odpowiedzi na Twoje zapytanie i wykonania usługi. Strona nie
+        śledzi odwiedzających.
+      </p>
     </div>
   </section>
 
@@ -26,29 +29,121 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
 
       <h2>Kto jest administratorem danych</h2>
       <p>
-        {a.nazwa}, {a.adres}{a.nip && `, NIP ${a.nip}`}. Kontakt w sprawach danych osobowych:{' '}
-        <a href={linkEmail}>{firma.email}</a>.
+        Administratorem Twoich danych osobowych jest {a.nazwa} (działalność gospodarcza pod marką {firma.marka}),{' '}
+        {a.adres}{a.nip && `, NIP ${a.nip}`}.
+      </p>
+      <p>
+        W sprawach dotyczących danych osobowych napisz na <a href={linkEmail}>{firma.email}</a> albo zadzwoń:{' '}
+        <a href={linkTelefon}>{firma.telefonWyswietlany}</a>. Administrator nie wyznaczył inspektora ochrony
+        danych.
       </p>
 
-      <h2>Jakie dane i po co</h2>
+      <h2>Jakie dane, po co i na jakiej podstawie</h2>
       <p>
-        Gdy wysyłasz zapytanie przez formularz, piszesz e-mail, dzwonisz albo piszesz na WhatsAppie, przetwarzam
-        dane, które podajesz: imię i nazwisko lub nazwę, telefon, e-mail, miejscowość i treść wiadomości. Służą
-        one do odpowiedzi na zapytanie, przygotowania wyceny i – jeśli dojdzie do współpracy – wykonania usługi
-        (art. 6 ust. 1 lit. b i f RODO).
+        Przetwarzam tylko dane, które sam podajesz – przez formularz, e-mail, telefon albo WhatsApp: imię
+        i nazwisko lub nazwę, numer telefonu, adres e-mail, miejscowość, treść wiadomości, a przy zleceniu także
+        adres montażu lub szkolenia i dane do faktury.
+      </p>
+      <ul class="lista">
+        <li>
+          <strong>Odpowiedź na zapytanie i przygotowanie wyceny</strong> – działania podejmowane na Twoje
+          żądanie przed zawarciem umowy (art. 6 ust. 1 lit. b RODO). Jeśli piszesz w imieniu wspólnoty,
+          spółdzielni lub firmy, podstawą jest mój uzasadniony interes: kontakt z przedstawicielem klienta
+          (art. 6 ust. 1 lit. f RODO).
+        </li>
+        <li>
+          <strong>Sprzedaż czujek, montaż i szkolenie</strong> – wykonanie umowy (art. 6 ust. 1 lit. b RODO).
+        </li>
+        <li>
+          <strong>Faktury, paragony i księgowość</strong> – obowiązek prawny wynikający z przepisów
+          podatkowych i o rachunkowości (art. 6 ust. 1 lit. c RODO).
+        </li>
+        <li>
+          <strong>Ustalenie, dochodzenie i obrona roszczeń</strong> – mój uzasadniony interes (art. 6 ust. 1
+          lit. f RODO).
+        </li>
+      </ul>
+      <p>
+        Podanie danych jest dobrowolne. Bez danych kontaktowych nie mogę jednak odpowiedzieć na zapytanie,
+        a bez adresu – wykonać montażu ani szkolenia.
       </p>
 
-      <h2>Jak długo</h2>
-      <p>
-        Zapytania, po których nie doszło do współpracy, usuwam najpóźniej po 12 miesiącach. Dane związane
-        z wykonaną usługą przechowuję tak długo, jak wymagają tego przepisy podatkowe i okres rękojmi.
-      </p>
+      <h2>Jak długo przechowuję dane</h2>
+      <ul class="lista">
+        <li>Zapytania, po których nie doszło do współpracy – do 12 miesięcy od ostatniego kontaktu.</li>
+        <li>Dane związane z wykonaną usługą – do upływu terminu przedawnienia roszczeń.</li>
+        <li>
+          Dokumenty księgowe – 5 lat, licząc od końca roku, w którym upłynął termin płatności podatku.
+        </li>
+      </ul>
 
       <h2>Komu dane są przekazywane</h2>
       <p>
-        Dane nie są sprzedawane ani udostępniane w celach marketingowych. Dostęp do nich mają wyłącznie dostawcy
-        usług, bez których strona i poczta nie działają: hosting strony (GitHub Pages), poczta elektroniczna
-        {formularzWTle && ' oraz usługa obsługująca formularz (Web3Forms)'}.
+        Danych nie sprzedaję i nie udostępniam w celach marketingowych. Mają do nich dostęp wyłącznie dostawcy
+        usług, bez których strona i kontakt nie działają:
+      </p>
+      <ul class="lista">
+        <li><strong>Hostinger</strong> – skrzynka e-mail w domenie {firma.domena} i obsługa domeny.</li>
+        <li>
+          <strong>Google (Gmail)</strong> – wiadomości przychodzące na {firma.email} są przekazywane na skrzynkę
+          w usłudze Gmail.
+        </li>
+        {
+          formularzWTle && (
+            <li>
+              <strong>Web3Forms</strong> – usługa, która przekazuje treść formularza ze strony na moją skrzynkę
+              e-mail. Jej operator, Web3Creative, ma siedzibę w Indiach, a serwery w USA. Według jego
+              deklaracji treść zgłoszeń nie jest przechowywana, a dzienniki serwera są usuwane mniej więcej
+              co dwa miesiące.
+            </li>
+          )
+        }
+        <li>
+          <strong>GitHub</strong> – hosting strony. Jak każdy serwer WWW zapisuje w dziennikach adres IP
+          odwiedzającego.
+        </li>
+        <li><strong>Meta (WhatsApp)</strong> – tylko wtedy, gdy sam piszesz do mnie przez WhatsApp.</li>
+        <li>Biuro rachunkowe – w zakresie danych z faktur, jeśli dojdzie do współpracy.</li>
+      </ul>
+
+      <h2>Przekazywanie danych poza Europejski Obszar Gospodarczy</h2>
+      <p>
+        Google, GitHub i Meta mogą przetwarzać dane w Stanach Zjednoczonych. Odbywa się to na podstawie decyzji
+        Komisji Europejskiej stwierdzającej odpowiedni stopień ochrony (EU–US Data Privacy Framework) albo
+        standardowych klauzul umownych stosowanych przez tych dostawców.
+      </p>
+      {
+        formularzWTle && (
+          <p>
+            Formularz na stronie korzysta z usługi Web3Forms, której serwery znajdują się w USA, a operator
+            w Indiach. Dane z formularza trafiają tam wyłącznie po to, by Twoje zapytanie dotarło do mnie
+            (art. 49 ust. 1 lit. b RODO – przekazanie niezbędne do podjęcia działań przed zawarciem umowy na
+            żądanie osoby, której dane dotyczą). Jeśli wolisz, żeby Twoje dane nie przechodziły przez tę usługę,
+            napisz bezpośrednio na <a href={linkEmail}>{firma.email}</a> albo zadzwoń.
+          </p>
+        )
+      }
+
+      <h2>Twoje prawa</h2>
+      <p>Masz prawo do:</p>
+      <ul class="lista">
+        <li>dostępu do swoich danych i otrzymania ich kopii,</li>
+        <li>sprostowania danych,</li>
+        <li>usunięcia danych lub ograniczenia ich przetwarzania,</li>
+        <li>przeniesienia danych – gdy podstawą przetwarzania jest umowa,</li>
+        <li>
+          sprzeciwu wobec przetwarzania – gdy podstawą jest uzasadniony interes administratora.
+        </li>
+      </ul>
+      <p>
+        Wystarczy wiadomość na <a href={linkEmail}>{firma.email}</a>. Możesz też wnieść skargę do Prezesa Urzędu
+        Ochrony Danych Osobowych (ul. Stawki 2, 00-193 Warszawa).
+      </p>
+
+      <h2>Decyzje automatyczne i profilowanie</h2>
+      <p>
+        Twoje dane nie służą do podejmowania decyzji w sposób zautomatyzowany ani do profilowania. Kalkulator
+        oferty liczy cenę w Twojej przeglądarce i niczego nie wysyła, dopóki sam nie wyślesz formularza.
       </p>
 
       <h2>Pliki cookies i statystyki</h2>
@@ -57,12 +152,7 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
         serwera co strona.
       </p>
 
-      <h2>Twoje prawa</h2>
-      <p>
-        Możesz zażądać dostępu do swoich danych, ich poprawienia, usunięcia lub ograniczenia przetwarzania, a także
-        wnieść sprzeciw. Wystarczy wiadomość na <a href={linkEmail}>{firma.email}</a>. Przysługuje Ci też skarga
-        do Prezesa Urzędu Ochrony Danych Osobowych.
-      </p>
+      <p class="przypis">Ostatnia aktualizacja: 21 listopada 2026 r.</p>
     </div>
   </section>
 </Base>

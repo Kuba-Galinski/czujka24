@@ -57,16 +57,17 @@ import { adres, firma } from '../config';
     <p class="pole__blad" id="f-wiadomosc-blad" hidden></p>
   </div>
 
-  <div class="pole pole--zgoda">
-    <label class="zgoda" for="f-zgoda">
-      <input id="f-zgoda" name="zgoda" type="checkbox" required aria-describedby="f-zgoda-blad" />
-      <span>
-        Zgadzam się na kontakt w sprawie tego zapytania. Dane służą wyłącznie do odpowiedzi – szczegóły
-        w&nbsp;<a href={adres('polityka-prywatnosci/')}>polityce prywatności</a>.
-      </span>
-    </label>
-    <p class="pole__blad" id="f-zgoda-blad" hidden></p>
-  </div>
+  <p class="przypis formularz__klauzula">
+    Administratorem danych z formularza jest {firma.administrator.nazwa} ({firma.marka}). Dane służą wyłącznie do
+    odpowiedzi na to zapytanie i przygotowania wyceny.
+    {
+      firma.web3formsKlucz &&
+        ' Formularz obsługuje zewnętrzna usługa Web3Forms z serwerami w USA – jeśli wolisz jej uniknąć, napisz na ' +
+          firma.email +
+          ' albo zadzwoń.'
+    }{' '}
+    Szczegóły w&nbsp;<a href={adres('polityka-prywatnosci/')}>polityce prywatności</a>.
+  </p>
 
   <!-- pułapka na boty: pole niewidoczne dla ludzi -->
   <div class="formularz__pulapka" aria-hidden="true">
@@ -96,7 +97,6 @@ import { adres, firma } from '../config';
     const email = pole('email');
     const miejscowosc = pole('miejscowosc');
     const wiadomosc = pole<HTMLTextAreaElement>('wiadomosc');
-    const zgoda = pole('zgoda');
     const pulapka = pole('botcheck');
 
     // Odnośniki typu /wycena/?temat=szkolenie#zapytanie zaczynają wiadomość za klienta.
@@ -128,7 +128,6 @@ import { adres, firma } from '../config';
         },
       ],
       [wiadomosc, () => (wiadomosc.value.trim() ? '' : 'Napisz w kilku słowach, czego dotyczy zapytanie.')],
-      [zgoda, () => (zgoda.checked ? '' : 'Zaznacz zgodę na kontakt – bez niej nie mogę odpowiedzieć.')],
     ];
 
     const pokazBlad = (el: HTMLInputElement | HTMLTextAreaElement, tekst: string) => {
@@ -308,22 +307,8 @@ import { adres, firma } from '../config';
     color: var(--czerwien-ciemna);
   }
 
-  .zgoda {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.8rem;
-    font-size: var(--t-s);
-    line-height: 1.45;
-    cursor: pointer;
-  }
-
-  .zgoda input {
-    flex: none;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin: 0.1rem 0 0;
-    accent-color: var(--granat);
-    cursor: pointer;
+  .formularz__klauzula {
+    max-width: 40rem;
   }
 
   .formularz__bledy {

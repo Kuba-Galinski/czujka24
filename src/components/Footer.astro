@@ -44,7 +44,10 @@ import Logo from './Logo.astro';
   </div>
 
   <div class="owijka stopka__dol">
-    <p>© {new Date().getFullYear()} {firma.marka}</p>
+    <p>
+      © {new Date().getFullYear()} {firma.marka} – {firma.administrator.nazwa}
+      {firma.administrator.nip && `, NIP ${firma.administrator.nip}`}
+    </p>
     <p>W razie pożaru lub podejrzenia zatrucia czadem dzwoń pod 112.</p>
   </div>
 </footer>

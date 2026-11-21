@@ -33,11 +33,11 @@ export const firma = {
   web3formsKlucz: 'bc3e7002-03f1-418d-9543-eb94aff1cd19',
 
   // Administrator danych – widoczny tylko w polityce prywatności.
-  // NIP jest opcjonalny: pusty = polityka go nie pokazuje.
+  // NIP pokazuje się w polityce prywatności i w stopce.
   administrator: {
     nazwa: 'Tomasz Jóźków',
     adres: 'ul. Główna 60, 59-180 Gaworzyce',
-    nip: '',
+    nip: '502-001-54-50',
   },
 
   zasieg: {

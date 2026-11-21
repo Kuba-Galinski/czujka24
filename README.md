@@ -38,7 +38,7 @@ skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapyt
 [Web3Forms](https://web3forms.com) – konto na `kontakt@czujka24.pl`, darmowy plan do 250 zgłoszeń
 miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
 
-Opcjonalnie do uzupełnienia w `src/config.ts`: NIP (pokaże się w polityce prywatności) i profil Messengera.
+Opcjonalnie do uzupełnienia w `src/config.ts`: profil Messengera.
 
 ## Wdrożenie
 
