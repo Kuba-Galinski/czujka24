@@ -33,36 +33,34 @@ Strona startuje w trybie roboczym: ma żółty pasek u góry i jest ukryta przed
 
 1. `src/config.ts` – wpisz prawdziwy telefon, numer WhatsApp i dane do polityki prywatności.
 2. `src/data/cennik.ts` – wpisz swoje stawki i ustaw `przykladowe: false`.
-3. Załóż skrzynkę `kontakt@czujka24.pl` (albo zmień adres w `src/config.ts`).
-4. Formularz: załóż darmowy klucz na <https://web3forms.com> i wklej go w `web3formsKlucz`.
-   Bez klucza formularz otwiera gotową wiadomość w programie pocztowym klienta.
-5. Wgraj zdjęcia do `public/img/` i obrazek `public/og.png`.
-6. Przeczytaj treści – szczególnie program szkoleń i sekcję „Kto przyjedzie do Twojego domu”.
-7. Daj politykę prywatności do sprawdzenia.
-8. W `src/config.ts` ustaw `wersjaRobocza: false`.
+3. Przeczytaj treści – szczególnie program szkoleń i sekcję „Kto przyjedzie do Twojego domu”.
+4. Daj politykę prywatności do sprawdzenia.
+5. W `src/config.ts` ustaw `wersjaRobocza: false`.
+
+Już zrobione: skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapytań
+przez [Web3Forms](https://web3forms.com) – konto na `kontakt@czujka24.pl`, darmowy plan
+do 250 zgłoszeń miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
 
 ## Wdrożenie
 
 Każdy `git push` na gałąź `main` buduje stronę i publikuje ją na GitHub Pages
-(`.github/workflows/deploy.yml`). Podgląd: <https://kuba-galinski.github.io/czujka24/>.
+(`.github/workflows/deploy.yml`) pod adresem <https://czujka24.pl>.
 
-### Podpięcie domeny czujka24.pl (Hostinger)
+### Domena czujka24.pl (Hostinger)
 
-1. W panelu Hostingera, w strefie DNS domeny, ustaw:
+Domena jest podpięta. Strefa DNS w Hostingerze zawiera:
 
-   | Typ   | Nazwa | Wartość                    |
-   | ----- | ----- | -------------------------- |
-   | A     | @     | 185.199.108.153            |
-   | A     | @     | 185.199.109.153            |
-   | A     | @     | 185.199.110.153            |
-   | A     | @     | 185.199.111.153            |
-   | CNAME | www   | kuba-galinski.github.io    |
+| Typ   | Nazwa | Wartość                    |
+| ----- | ----- | -------------------------- |
+| A     | @     | 185.199.108.153            |
+| A     | @     | 185.199.109.153            |
+| A     | @     | 185.199.110.153            |
+| A     | @     | 185.199.111.153            |
+| CNAME | www   | kuba-galinski.github.io    |
 
-   Usuń domyślne rekordy A i AAAA wskazujące na parking Hostingera.
-2. Na GitHubie: repozytorium → Settings → Pages → Custom domain → `czujka24.pl` → Save.
-3. Gdy GitHub potwierdzi DNS (zwykle do godziny), zaznacz „Enforce HTTPS”.
-
-Adresy w kodzie przestawią się same – workflow pobiera adres strony z ustawień Pages.
+W ustawieniach repozytorium (Settings → Pages) domena własna to `czujka24.pl`, z wymuszonym HTTPS.
+Adres `www.czujka24.pl` i stary `kuba-galinski.github.io/czujka24` przekierowują na `czujka24.pl`.
+Workflow sam pobiera adres strony z ustawień Pages, więc w kodzie nie ma nic do zmiany.
 
 ## Projekt graficzny
 

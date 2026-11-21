@@ -16,7 +16,7 @@ export const firma = {
   telefon: '+48000000000',
   telefonWyswietlany: '000 000 000',
 
-  // UZUPEŁNIJ: skrzynka musi istnieć (np. poczta w Hostingerze albo przekierowanie na prywatny adres).
+  // Skrzynka w Hostingerze (plan Starter Business Email).
   email: 'kontakt@czujka24.pl',
 
   // UZUPEŁNIJ: numer WhatsApp bez plusa i spacji (zwykle ten sam co telefon).
@@ -30,7 +30,7 @@ export const firma = {
    * Pusty = formularz otwiera gotową wiadomość w programie pocztowym klienta.
    * Klucz Web3Forms jest publiczny z założenia, można go trzymać w repozytorium.
    */
-  web3formsKlucz: '',
+  web3formsKlucz: 'bc3e7002-03f1-418d-9543-eb94aff1cd19',
 
   // Dane do polityki prywatności – UZUPEŁNIJ przed publikacją.
   administrator: {
