@@ -1,35 +1,21 @@
 /**
- * Ceny "od" używane przez kalkulator oferty (strona /wycena/).
- *
- * UWAGA: poniższe kwoty są PRZYKŁADOWE – wstawione, żeby kalkulator działał.
- * Wpisz swoje stawki i ustaw `przykladowe: false`; dopóki jest `true`,
- * przy kalkulatorze wyświetla się informacja, że ceny są orientacyjne i robocze.
+ * Stawki używane przez kalkulator oferty (strona /wycena/). Kwoty brutto, w złotych.
+ * Kalkulator zawsze pokazuje sumę jako cenę "od" – dokładna wycena jest indywidualna.
  */
 export const cennik = {
-  przykladowe: true,
+  // true = przy kalkulatorze wyświetla się informacja, że stawki są robocze.
+  przykladowe: false,
 
-  // Cena jednej czujki z baterią, brutto, zł.
-  czujkaDymu: 79,
-  czujkaCzadu: 129,
+  // Cena jednej czujki z baterią – "od".
+  czujkaDymu: 59,
+  czujkaCzadu: 99,
 
-  // Montaż jednej czujki u klienta, zł.
-  montazSztuka: 30,
+  // Montaż: wizyta obejmuje dojazd i montaż pierwszej czujki, każda kolejna czujka jest doliczana.
+  wizyta: 100,
+  montazKolejna: 29,
 
-  // Minimalny koszt wizyty z montażem (dojazd w zasięgu działania), zł.
-  wizytaMinimum: 120,
-
-  // Szkolenie – cena "od" za jedno spotkanie, zł.
-  szkolenie: {
-    dom: 300,
-    wspolnota: 600,
-  },
-
-  // Rabat ilościowy na czujki i montaż: od ilu sztuk łącznie i ile procent.
-  rabaty: [
-    { odSztuk: 20, procent: 8 },
-    { odSztuk: 50, procent: 12 },
-    { odSztuk: 100, procent: 15 },
-  ],
+  // Szkolenie – zawsze komunikowane jako "od", bez konkretnej kwoty.
+  szkolenieOd: 300,
 } as const;
 
 export type Cennik = typeof cennik;

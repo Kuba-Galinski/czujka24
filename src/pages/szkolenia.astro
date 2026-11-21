@@ -2,10 +2,7 @@
 import Icon from '../components/Icon.astro';
 import Photo from '../components/Photo.astro';
 import { adres, firma, linkTelefon } from '../config';
-import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
-
-const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
 
 const szkolenia = [
   {
@@ -21,7 +18,6 @@ const szkolenia = [
       'Domowy plan ewakuacji: drogi wyjścia i miejsce zbiórki',
     ],
     czas: 'około 60–90 minut',
-    cena: cennik.szkolenie.dom,
     dla: 'dom',
   },
   {
@@ -37,7 +33,6 @@ const szkolenia = [
       'Pytania mieszkańców – zwykle najdłuższa część spotkania',
     ],
     czas: 'około 60–90 minut, także po południu i wieczorem',
-    cena: cennik.szkolenie.wspolnota,
     dla: 'wspolnota',
   },
 ];
@@ -93,13 +88,6 @@ const przebieg = [
               <div>
                 <dt>Czas</dt>
                 <dd>{s.czas}</dd>
-              </div>
-              <div>
-                <dt>Cena</dt>
-                <dd>
-                  od {zl(s.cena)} za spotkanie
-                  {cennik.przykladowe && <span class="przypis"> (stawka przykładowa)</span>}
-                </dd>
               </div>
             </dl>
             <a class="przycisk" href={adres(`wycena/?dla=${s.dla}`)}>

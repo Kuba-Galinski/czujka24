@@ -2,7 +2,6 @@
 import Icon from '../components/Icon.astro';
 import Photo from '../components/Photo.astro';
 import { adres, firma, linkEmail, linkTelefon } from '../config';
-import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
 
 const etapy = [
@@ -76,9 +75,8 @@ const etapy = [
       <ul class="lista korzysci">
         <li>
           <strong>Niższa cena.</strong>{' '}
-          Rabat rośnie z liczbą czujek: {
-            cennik.rabaty.map((r) => `${r.procent}% od ${r.odSztuk} sztuk`).join(', ')
-          }{cennik.przykladowe && ' (progi przykładowe)'}.
+          Jedna wizyta na cały budynek zamiast osobnego dojazdu do każdego mieszkania. Przy większej liczbie
+          lokali przygotowuję wycenę indywidualną.
         </li>
         <li>
           <strong>Ten sam sprzęt w całym budynku.</strong>{' '}

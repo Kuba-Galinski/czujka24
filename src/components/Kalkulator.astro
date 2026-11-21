@@ -45,11 +45,11 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
     <div class="kalkulator__opcje">
       <label class="haczyk">
         <input type="checkbox" name="montaz" checked />
-        <span>Montaż u mnie <small>od {zl(cennik.montazSztuka)} za czujkę, wizyta od {zl(cennik.wizytaMinimum)}</small></span>
+        <span>Montaż u mnie <small>wizyta {zl(cennik.wizyta)} z montażem pierwszej czujki, każda kolejna {zl(cennik.montazKolejna)}</small></span>
       </label>
       <label class="haczyk">
         <input type="checkbox" name="szkolenie" />
-        <span>Szkolenie <small data-szkolenie-cena>od {zl(cennik.szkolenie.dom)} za spotkanie</small></span>
+        <span>Szkolenie <small>od {zl(cennik.szkolenieOd)}, wycena indywidualna</small></span>
       </label>
     </div>
   </form>
@@ -85,17 +85,9 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
     <dl>
       <div><dt>Czujka dymu z baterią</dt><dd>od {zl(cennik.czujkaDymu)}</dd></div>
       <div><dt>Czujka czadu z baterią</dt><dd>od {zl(cennik.czujkaCzadu)}</dd></div>
-      <div><dt>Montaż jednej czujki</dt><dd>od {zl(cennik.montazSztuka)}</dd></div>
-      <div><dt>Szkolenie dla domowników</dt><dd>od {zl(cennik.szkolenie.dom)}</dd></div>
-      <div><dt>Szkolenie dla wspólnoty</dt><dd>od {zl(cennik.szkolenie.wspolnota)}</dd></div>
-      {
-        cennik.rabaty.map((r) => (
-          <div>
-            <dt>Rabat od {r.odSztuk} czujek</dt>
-            <dd>{r.procent}%</dd>
-          </div>
-        ))
-      }
+      <div><dt>Wizyta z montażem pierwszej czujki</dt><dd>{zl(cennik.wizyta)}</dd></div>
+      <div><dt>Montaż każdej kolejnej czujki</dt><dd>{zl(cennik.montazKolejna)}</dd></div>
+      <div><dt>Szkolenie</dt><dd>od {zl(cennik.szkolenieOd)}</dd></div>
     </dl>
   </div>
 </section>
@@ -124,7 +116,6 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
     const poleSzkolenie = formularz.elements.namedItem('szkolenie') as HTMLInputElement;
     const suma = korzen.querySelector<HTMLOutputElement>('[data-suma]')!;
     const rozbicie = korzen.querySelector<HTMLElement>('[data-rozbicie]')!;
-    const cenaSzkolenia = korzen.querySelector<HTMLElement>('[data-szkolenie-cena]')!;
 
     const dlaKogo = () => (new FormData(formularz).get('dla') as Dla) ?? 'dom';
     const liczba = (pole: HTMLInputElement) => {
@@ -151,22 +142,19 @@ const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
         wiersze.push([`Czujki czadu × ${czad}`, zl(czad * cennik.czujkaCzadu)]);
       }
       if (poleMontaz.checked && sztuk > 0) {
-        const montaz = Math.max(sztuk * cennik.montazSztuka, cennik.wizytaMinimum);
-        czesc += montaz;
-        wiersze.push([`Montaż × ${sztuk}`, zl(montaz)]);
+        // Wizyta obejmuje montaż pierwszej czujki; każda kolejna jest doliczana osobno.
+        czesc += cennik.wizyta;
+        wiersze.push(['Wizyta z montażem pierwszej czujki', zl(cennik.wizyta)]);
+        if (sztuk > 1) {
+          const kolejne = (sztuk - 1) * cennik.montazKolejna;
+          czesc += kolejne;
+          wiersze.push([`Montaż kolejnych czujek × ${sztuk - 1}`, zl(kolejne)]);
+        }
       }
 
-      const rabat = [...cennik.rabaty].reverse().find((r) => sztuk >= r.odSztuk);
-      if (rabat && czesc > 0) {
-        const kwota = (czesc * rabat.procent) / 100;
-        czesc -= kwota;
-        wiersze.push([`Rabat ${rabat.procent}% (od ${rabat.odSztuk} czujek)`, `−${zl(kwota)}`]);
-      }
-
-      cenaSzkolenia.textContent = `od ${zl(cennik.szkolenie[dla])} za spotkanie`;
       if (poleSzkolenie.checked) {
-        czesc += cennik.szkolenie[dla];
-        wiersze.push(['Szkolenie', zl(cennik.szkolenie[dla])]);
+        czesc += cennik.szkolenieOd;
+        wiersze.push(['Szkolenie', `od ${zl(cennik.szkolenieOd)}`]);
       }
 
       suma.textContent = czesc > 0 ? zl(czesc) : '0 zł';
