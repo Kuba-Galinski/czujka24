@@ -2,7 +2,10 @@
 import Icon from '../components/Icon.astro';
 import Photo from '../components/Photo.astro';
 import { adres, firma, linkTelefon } from '../config';
+import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
+
+const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
 
 const krokiDym = [
   {
@@ -113,6 +116,7 @@ const ochrona = [
         <a href="#po-montazu">Test i konserwacja</a>
         <a href="#alarm">Gdy zadziała alarm</a>
         <a href="#ochrona-domu">Gaśnica, koc i reszta</a>
+        <a href="#kup-czujke">Gdzie kupić czujkę</a>
       </nav>
     </div>
   </section>
@@ -355,27 +359,79 @@ const ochrona = [
     </div>
   </section>
 
-  <section class="sekcja sekcja--granat">
-    <div class="owijka koniec">
-      <h2>Nie masz wiertarki albo czasu?</h2>
-      <p class="wstep">
-        Przyjadę, dobiorę miejsca, zamontuję czujki i pokażę domownikom, jak je testować. Dojazd do {
-          firma.zasieg.promienKm
-        } km od miejscowości {firma.zasieg.baza}.
-      </p>
-      <div class="przyciski">
-        <a class="przycisk" href={adres('wycena/')}>
-          <Icon nazwa="kalkulator" />
-          Policz wycenę
-        </a>
-        <a class="przycisk przycisk--obrys" href={linkTelefon}>
-          <Icon nazwa="telefon" />
-          {firma.telefonWyswietlany}
-        </a>
+  <section class="sekcja" id="kup-czujke">
+    <div class="owijka dwie dwie--szeroka-waska">
+      <div class="kup">
+        <h2>Gdzie kupić czujkę</h2>
+        <p class="wstep">
+          U mnie. Napisz, ile masz pokoi i czym ogrzewasz, a dobiorę czujki do Twojego mieszkania – nie musisz
+          porównywać modeli w sklepach.
+        </p>
+        <div class="przyciski">
+          <a class="przycisk" href={adres('wycena/?temat=czujki#zapytanie')}>Napisz zapytanie</a>
+          <a class="przycisk przycisk--obrys" href={adres('wycena/')}>
+            <Icon nazwa="kalkulator" />
+            Policz wycenę
+          </a>
+        </div>
       </div>
-      <p class="przypis">
-        Poradnik opiera się na zaleceniach Państwowej Straży Pożarnej. Jeśli instrukcja Twojej czujki podaje inne
-        odległości, pierwszeństwo ma instrukcja producenta.
+      <div>
+        <dl class="ceny">
+          <div>
+            <dt>Czujka dymu z baterią</dt>
+            <dd>od {zl(cennik.czujkaDymu)}</dd>
+          </div>
+          <div>
+            <dt>Czujka czadu z baterią</dt>
+            <dd>od {zl(cennik.czujkaCzadu)}</dd>
+          </div>
+        </dl>
+        <p class="przypis ceny__dopisek">
+          Każda czujka ma deklarację zgodności z normą: PN-EN 14604 (dym) albo PN-EN 50291-1 (czad). Cena zależy
+          od modelu – dokładną podaję w wycenie.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--granat" id="pomoc">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Nie czujesz się na siłach?</h2>
+        <p>Nie musisz robić tego samodzielnie. Są dwie drogi.</p>
+      </div>
+      <div class="dwie drogi">
+        <div class="droga">
+          <h3>Zamów szkolenie</h3>
+          <p>
+            Spotkanie z prawdziwą czujką, gaśnicą i kocem gaśniczym w rękach. Po nim wiadomo, jak brzmi alarm
+            i co robić, gdy zadziała. Od {zl(cennik.szkolenieOd)}.
+          </p>
+          <div class="przyciski">
+            <a class="przycisk" href={adres('wycena/?temat=szkolenie#zapytanie')}>Zamów szkolenie</a>
+            <a class="przycisk przycisk--obrys" href={adres('szkolenia/')}>Zobacz program</a>
+          </div>
+        </div>
+        <div class="droga">
+          <h3>Zamów montaż</h3>
+          <p>
+            Przyjadę, dobiorę miejsca, zamontuję czujki i pokażę domownikom, jak je testować. Wizyta {
+              zl(cennik.wizyta)
+            } z montażem pierwszej czujki, każda kolejna {zl(cennik.montazKolejna)}.
+          </p>
+          <div class="przyciski">
+            <a class="przycisk przycisk--obrys" href={adres('wycena/?temat=montaz#zapytanie')}>Zamów montaż</a>
+            <a class="przycisk przycisk--obrys" href={linkTelefon}>
+              <Icon nazwa="telefon" />
+              {firma.telefonWyswietlany}
+            </a>
+          </div>
+        </div>
+      </div>
+      <p class="przypis drogi__dopisek">
+        Dojazd do {firma.zasieg.promienKm} km od miejscowości {firma.zasieg.baza}. Poradnik opiera się na
+        zaleceniach Państwowej Straży Pożarnej; jeśli instrukcja Twojej czujki podaje inne odległości,
+        pierwszeństwo ma instrukcja producenta.
       </p>
     </div>
   </section>
@@ -635,13 +691,64 @@ const ochrona = [
     }
   }
 
-  .koniec {
+  /* zakup czujek */
+  .kup {
     display: grid;
     gap: var(--o-3);
     justify-items: start;
   }
 
-  .koniec .przypis {
-    max-width: 40rem;
+  .ceny {
+    border-top: 2px solid var(--tusz);
+  }
+
+  .ceny div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: var(--o-2);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .ceny dd {
+    margin: 0;
+    font-family: var(--kroj-waski);
+    font-weight: 800;
+    font-size: var(--t-xl);
+    line-height: 1;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ceny__dopisek {
+    margin-top: var(--o-2);
+  }
+
+  /* dwie drogi: szkolenie albo montaż */
+  .drogi {
+    align-items: stretch;
+  }
+
+  .droga {
+    display: grid;
+    gap: var(--o-2);
+    align-content: start;
+    padding-top: var(--o-3);
+    border-top: 2px solid #fff;
+  }
+
+  .droga p {
+    color: #d5dee8;
+    max-width: 34rem;
+  }
+
+  .droga .przyciski {
+    margin-top: var(--o-1);
+  }
+
+  .drogi__dopisek {
+    margin-top: var(--o-4);
+    max-width: 46rem;
   }
 </style>

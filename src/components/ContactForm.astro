@@ -99,6 +99,15 @@ import { adres, firma } from '../config';
     const zgoda = pole('zgoda');
     const pulapka = pole('botcheck');
 
+    // Odnośniki typu /wycena/?temat=szkolenie#zapytanie zaczynają wiadomość za klienta.
+    const TEMATY: Record<string, string> = {
+      czujki: 'Dzień dobry, chcę kupić czujki. ',
+      montaz: 'Dzień dobry, chcę zamówić montaż czujek. ',
+      szkolenie: 'Dzień dobry, chcę zamówić szkolenie. ',
+    };
+    const temat = new URLSearchParams(location.search).get('temat');
+    if (temat && temat in TEMATY && !wiadomosc.value) wiadomosc.value = TEMATY[temat];
+
     const reguly: [HTMLInputElement | HTMLTextAreaElement, () => string][] = [
       [imie, () => (imie.value.trim() ? '' : 'Wpisz imię i nazwisko albo nazwę wspólnoty.')],
       [
