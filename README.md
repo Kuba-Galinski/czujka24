@@ -31,13 +31,13 @@ npm run build    # gotowa strona w folderze dist/
 
 Strona startuje w trybie roboczym: ma żółty pasek u góry i jest ukryta przed wyszukiwarkami.
 
-1. `src/config.ts` – wpisz prawdziwy telefon, numer WhatsApp i dane do polityki prywatności.
-2. `src/data/cennik.ts` – wpisz swoje stawki i ustaw `przykladowe: false`.
+1. `src/data/cennik.ts` – wpisz swoje stawki i ustaw `przykladowe: false`.
+2. `src/config.ts` – opcjonalnie NIP (polityka prywatności) i profil Messengera.
 3. Przeczytaj treści – szczególnie program szkoleń i sekcję „Kto przyjedzie do Twojego domu”.
 4. Daj politykę prywatności do sprawdzenia.
 5. W `src/config.ts` ustaw `wersjaRobocza: false`.
 
-Już zrobione: skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapytań
+Już zrobione: telefon, WhatsApp i dane administratora w `src/config.ts`, skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapytań
 przez [Web3Forms](https://web3forms.com) – konto na `kontakt@czujka24.pl`, darmowy plan
 do 250 zgłoszeń miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
 

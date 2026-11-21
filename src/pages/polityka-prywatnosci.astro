@@ -19,15 +19,15 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
       {
         firma.wersjaRobocza && (
           <p class="przypis">
-            Wersja robocza – przed publikacją trzeba uzupełnić dane administratora i dać tekst do sprawdzenia
-            osobie znającej RODO.
+            Wersja robocza – przed publikacją warto dać ten tekst do sprawdzenia osobie znającej RODO.
           </p>
         )
       }
 
       <h2>Kto jest administratorem danych</h2>
       <p>
-        {a.nazwa}, {a.adres}, NIP {a.nip}. Kontakt w sprawach danych osobowych: <a href={linkEmail}>{firma.email}</a>.
+        {a.nazwa}, {a.adres}{a.nip && `, NIP ${a.nip}`}. Kontakt w sprawach danych osobowych:{' '}
+        <a href={linkEmail}>{firma.email}</a>.
       </p>
 
       <h2>Jakie dane i po co</h2>

@@ -1,6 +1,6 @@
 /**
  * Jedno miejsce na wszystkie dane firmy.
- * Przed publikacją uzupełnij pola oznaczone "UZUPEŁNIJ" i ustaw `wersjaRobocza: false`.
+ * Przed publikacją uzupełnij cennik (src/data/cennik.ts) i ustaw `wersjaRobocza: false`.
  */
 export const firma = {
   marka: 'czujka24',
@@ -8,19 +8,19 @@ export const firma = {
 
   /**
    * true  = strona ma baner "wersja robocza" i jest ukryta przed wyszukiwarkami (noindex).
-   * false = strona publiczna. Przełącz dopiero po uzupełnieniu telefonu, e-maila i cennika.
+   * false = strona publiczna. Przełącz dopiero po uzupełnieniu cennika i przejrzeniu treści.
    */
   wersjaRobocza: true,
 
-  // UZUPEŁNIJ: numer w formacie międzynarodowym bez spacji oraz wersja do wyświetlania.
-  telefon: '+48000000000',
-  telefonWyswietlany: '000 000 000',
+  // Numer w formacie międzynarodowym bez spacji oraz wersja do wyświetlania.
+  telefon: '+48721096734',
+  telefonWyswietlany: '721 096 734',
 
   // Skrzynka w Hostingerze (plan Starter Business Email).
   email: 'kontakt@czujka24.pl',
 
-  // UZUPEŁNIJ: numer WhatsApp bez plusa i spacji (zwykle ten sam co telefon).
-  whatsapp: '48000000000',
+  // Numer WhatsApp bez plusa i spacji (inny niż telefon do rozmów).
+  whatsapp: '48538579392',
 
   // UZUPEŁNIJ (opcjonalnie): nazwa użytkownika lub strony w Messengerze, np. "czujka24". Puste = przycisk ukryty.
   messenger: '',
@@ -32,11 +32,12 @@ export const firma = {
    */
   web3formsKlucz: 'bc3e7002-03f1-418d-9543-eb94aff1cd19',
 
-  // Dane do polityki prywatności – UZUPEŁNIJ przed publikacją.
+  // Administrator danych – widoczny tylko w polityce prywatności.
+  // NIP jest opcjonalny: pusty = polityka go nie pokazuje.
   administrator: {
-    nazwa: '[UZUPEŁNIJ: nazwa działalności z CEIDG]',
-    adres: '[UZUPEŁNIJ: adres działalności]',
-    nip: '[UZUPEŁNIJ: NIP]',
+    nazwa: 'Tomasz Jóźków',
+    adres: 'ul. Główna 60, 59-180 Gaworzyce',
+    nip: '',
   },
 
   zasieg: {
