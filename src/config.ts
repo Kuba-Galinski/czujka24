@@ -32,6 +32,13 @@ export const firma = {
    */
   web3formsKlucz: 'bc3e7002-03f1-418d-9543-eb94aff1cd19',
 
+  /**
+   * Identyfikator tagu Google (statystyki Google Analytics), np. "GTM-XXXXXXXX".
+   * Tag wczytuje się dopiero po zgodzie odwiedzającego – patrz src/components/Zgoda.astro.
+   * Pusty = strona bez statystyk, bez okienka zgody i bez plików cookies.
+   */
+  tagGoogle: 'GTM-MX95F8RT',
+
   // Administrator danych – widoczny tylko w polityce prywatności.
   // NIP pokazuje się w polityce prywatności i w stopce.
   administrator: {
@@ -40,9 +47,20 @@ export const firma = {
     nip: '502-001-54-50',
   },
 
+  // Miejscowość siedziby dla wyszukiwarek (dane strukturalne, src/seo.ts). Bez ulicy – usługa jest u klienta.
+  siedziba: {
+    miejscowosc: 'Gaworzyce',
+    kod: '59-180',
+    wojewodztwo: 'dolnośląskie',
+    szer: 51.628,
+    dl: 15.882,
+  },
+
   zasieg: {
     promienKm: 100,
     baza: 'Gaworzyce i Głogów',
+    // Środek okręgu zasięgu: Głogów. Z tych współrzędnych korzysta mapa zasięgu i dane strukturalne.
+    srodek: { szer: 51.663, dl: 16.085 },
     wojewodztwa: ['dolnośląskie', 'lubuskie', 'wielkopolskie'],
   },
 } as const;

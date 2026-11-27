@@ -29,6 +29,7 @@ const jest = existsSync(`public/img/${plik}`);
       width={szer}
       height={wys}
       loading={pilne ? 'eager' : 'lazy'}
+      fetchpriority={pilne ? 'high' : undefined}
       decoding="async"
     />
   ) : firma.wersjaRobocza ? (

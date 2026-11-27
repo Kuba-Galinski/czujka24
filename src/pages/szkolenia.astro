@@ -2,7 +2,9 @@
 import Icon from '../components/Icon.astro';
 import Photo from '../components/Photo.astro';
 import { adres, firma, linkTelefon } from '../config';
+import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
+import { usluga } from '../seo';
 
 const szkolenia = [
   {
@@ -60,6 +62,15 @@ const przebieg = [
 <Base
   tytul="Szkolenia przeciwpożarowe dla mieszkańców i wspólnot"
   opis="Praktyczne szkolenia przeciwpożarowe prowadzone przez strażaka OSP: reakcja na alarm czujki, użycie gaśnicy, ewakuacja. Dolnośląskie, lubuskie, wielkopolskie."
+  schema={szkolenia.map((s) =>
+    usluga(Astro.site, {
+      nazwa: `Szkolenie przeciwpożarowe ${s.tytul.charAt(0).toLowerCase()}${s.tytul.slice(1)}`,
+      opis: s.dlaKogo,
+      rodzaj: 'Szkolenie przeciwpożarowe',
+      sciezka: `szkolenia/#${s.id}`,
+      cenaOd: cennik.szkolenieOd,
+    }),
+  )}
 >
   <section class="czolo">
     <div class="owijka dwie dwie--szeroka-waska">

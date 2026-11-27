@@ -15,8 +15,9 @@ npm run build    # gotowa strona w folderze dist/
 
 | Plik                                 | Zawartość                                                        |
 | ------------------------------------ | ---------------------------------------------------------------- |
-| `src/config.ts`                      | telefon, e-mail, WhatsApp, zasięg, klucz formularza, tryb roboczy |
+| `src/config.ts`                      | telefon, e-mail, WhatsApp, zasięg, klucz formularza, tag Google, tryb roboczy |
 | `src/data/cennik.ts`                 | stawki „od” dla kalkulatora oferty                               |
+| `src/seo.ts`                         | dane strukturalne dla wyszukiwarek (firma, cennik, usługi, pytania) |
 | `src/pages/index.astro`              | strona główna                                                    |
 | `src/pages/szkolenia.astro`          | oferta szkoleń                                                   |
 | `src/pages/montaz-czujnikow.astro`   | poradnik montażu czujek                                          |
@@ -39,6 +40,17 @@ skrzynka `kontakt@czujka24.pl` (Hostinger), zdjęcia i `og.png`, formularz zapyt
 miesięcznie. Klucz formularza jest publiczny z założenia i leży w `src/config.ts`.
 
 Opcjonalnie do uzupełnienia w `src/config.ts`: profil Messengera.
+
+## Wyszukiwarki (SEO)
+
+- Tytuł i opis każdej podstrony to atrybuty `tytul` i `opis` w `<Base>` na górze pliku strony.
+  Tytuł razem z dopiskiem „| czujka24” powinien mieć około 60 znaków, opis do około 160.
+- Dane strukturalne (schema.org) generuje `src/seo.ts` z `src/config.ts` i `src/data/cennik.ts`:
+  firma z zasięgiem i cennikiem na każdej stronie, do tego usługi, instrukcje montażu i pytania
+  z odpowiedziami na właściwych podstronach. Zmiana ceny lub telefonu w konfiguracji poprawia je sama.
+- Pytania i odpowiedzi na stronie głównej to lista `faq` w `src/pages/index.astro`.
+- Strona błędu 404 ma `indeksuj={false}` i nie trafia do wyszukiwarek ani do mapy strony.
+- Po wdrożeniu wynik można sprawdzić w <https://search.google.com/test/rich-results>.
 
 ## Wdrożenie
 
@@ -66,7 +78,10 @@ Workflow sam pobiera adres strony z ustawień Pages, więc w kodzie nie ma nic d
 - Kierunek: „rzut i sufit” – chłodna biel sufitu, granat munduru, czerwień wozu strażackiego
   tylko dla alarmu i głównego przycisku. Okrąg jest zarezerwowany dla czujki.
 - Kroje: Sofia Sans Condensed (nagłówki) i Sofia Sans (tekst), hostowane lokalnie – bez Google Fonts.
-- Bez cookies, bez analityki, bez zewnętrznych skryptów.
+- Bez reklam. Jedyny zewnętrzny skrypt to tag Google (statystyki Google Analytics) – wczytuje się
+  dopiero po zgodzie w okienku na dole strony i tylko pod domeną `czujka24.pl`
+  (`src/components/Zgoda.astro`, identyfikator `tagGoogle` w `src/config.ts`; pusty wyłącza statystyki).
+  Bez zgody strona nie zapisuje cookies i nie łączy się z Google.
 
 Przy projektowaniu użyto skilli Claude Code `frontend-design` oraz
 [`ui-ux-pro-max`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill). Drugi z nich instaluje się

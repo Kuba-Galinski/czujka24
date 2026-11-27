@@ -5,19 +5,27 @@ import '../styles/global.css';
 
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import Zgoda from '../components/Zgoda.astro';
 import { existsSync } from 'node:fs';
 import { adres, firma } from '../config';
+import { graf, jakoJson, type Wezel } from '../seo';
 
 interface Props {
   tytul: string;
   opis: string;
+  /** false = strona poza wyszukiwarkami (np. strona błędu). */
+  indeksuj?: boolean;
+  /** Dodatkowe dane strukturalne tej podstrony – patrz src/seo.ts. */
+  schema?: Wezel[];
 }
 
-const { tytul, opis } = Astro.props;
+const { tytul, opis, indeksuj = true, schema = [] } = Astro.props;
 const pelnyTytul = `${tytul} | ${firma.marka}`;
 const kanoniczny = new URL(Astro.url.pathname, Astro.site);
+const widoczna = indeksuj && !firma.wersjaRobocza;
 // Obrazek do udostępnień pojawia się w nagłówku dopiero, gdy plik public/og.png istnieje.
 const obrazOg = existsSync('public/og.png') ? new URL(adres('og.png'), Astro.site) : null;
+const obrazOgOpis = `${firma.marka} – czujki dymu i czadu z montażem, szkolenia przeciwpożarowe`;
 ---
 
 <!doctype html>
@@ -27,8 +35,11 @@ const obrazOg = existsSync('public/og.png') ? new URL(adres('og.png'), Astro.sit
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pelnyTytul}</title>
     <meta name="description" content={opis} />
-    <link rel="canonical" href={kanoniczny} />
-    {firma.wersjaRobocza && <meta name="robots" content="noindex, nofollow" />}
+    {widoczna && <link rel="canonical" href={kanoniczny} />}
+    <meta
+      name="robots"
+      content={widoczna ? 'index, follow, max-image-preview:large, max-snippet:-1' : 'noindex, nofollow'}
+    />
     <link rel="icon" type="image/svg+xml" href={adres('favicon.svg')} />
     <meta name="theme-color" content="#14304e" />
 
@@ -38,7 +49,19 @@ const obrazOg = existsSync('public/og.png') ? new URL(adres('og.png'), Astro.sit
     <meta property="og:title" content={pelnyTytul} />
     <meta property="og:description" content={opis} />
     <meta property="og:url" content={kanoniczny} />
-    {obrazOg && <meta property="og:image" content={obrazOg} />}
+    {
+      obrazOg && (
+        <>
+          <meta property="og:image" content={obrazOg} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={obrazOgOpis} />
+        </>
+      )
+    }
+    <meta name="twitter:card" content={obrazOg ? 'summary_large_image' : 'summary'} />
+
+    {widoczna && <script is:inline type="application/ld+json" set:html={jakoJson(graf(Astro.site, schema))} />}
 
     <script is:inline>
       document.documentElement.classList.add('js');
@@ -58,6 +81,7 @@ const obrazOg = existsSync('public/og.png') ? new URL(adres('og.png'), Astro.sit
       <slot />
     </main>
     <Footer />
+    <Zgoda />
   </body>
 </html>
 

@@ -4,6 +4,7 @@ import Photo from '../components/Photo.astro';
 import { adres, firma, linkTelefon } from '../config';
 import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
+import { instrukcja, pelnyAdres } from '../seo';
 
 const zl = (kwota: number) => `${kwota.toLocaleString('pl-PL')} zł`;
 
@@ -100,8 +101,22 @@ const ochrona = [
 ---
 
 <Base
-  tytul="Jak zamontować czujkę dymu i czujkę czadu – poradnik strażaka"
-  opis="Gdzie i jak zamontować czujkę dymu oraz czujkę tlenku węgla: miejsca, wysokości, odległości, test i konserwacja. Co robić, gdy zadziała alarm."
+  tytul="Jak zamontować czujnik dymu i czadu – poradnik strażaka"
+  opis="Gdzie i jak zamontować czujkę dymu oraz czujkę tlenku węgla (czadu): miejsce, wysokości, odległości, test i konserwacja. Co robić, gdy zadziała alarm."
+  schema={[
+    instrukcja({
+      nazwa: 'Jak zamontować czujkę dymu',
+      opis: 'Montaż autonomicznej czujki dymu na suficie: wybór pomieszczeń, miejsce, mocowanie i test.',
+      adres: pelnyAdres(Astro.site, 'montaz-czujnikow/#czujka-dymu'),
+      kroki: krokiDym,
+    }),
+    instrukcja({
+      nazwa: 'Jak zamontować czujkę czadu',
+      opis: 'Montaż czujki tlenku węgla na ścianie: wysokość, odległość od urządzenia grzewczego i uruchomienie.',
+      adres: pelnyAdres(Astro.site, 'montaz-czujnikow/#czujka-czadu'),
+      kroki: krokiCzad,
+    }),
+  ]}
 >
   <section class="czolo">
     <div class="owijka">

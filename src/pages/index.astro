@@ -5,7 +5,9 @@ import Photo from '../components/Photo.astro';
 import Terminy from '../components/Terminy.astro';
 import Zasieg from '../components/Zasieg.astro';
 import { adres, firma, linkTelefon } from '../config';
+import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
+import { pytania } from '../seo';
 
 const oferta = [
   {
@@ -27,16 +29,60 @@ const oferta = [
     etykieta: 'Oferta dla wspólnot',
   },
 ];
+
+// Pytania, które ludzie wpisują w wyszukiwarkę. Odpowiedzi trafiają też do danych strukturalnych (FAQPage).
+const faq = [
+  {
+    pytanie: 'Czy czujka dymu w mieszkaniu jest obowiązkowa?',
+    odpowiedz:
+      'Tak. Nowe mieszkania i domy muszą mieć czujkę dymu od 23 grudnia 2024 r., lokale, w których świadczy się usługi hotelarskie (także najem krótkoterminowy) – od 30 czerwca 2026 r., a wszystkie pozostałe mieszkania i domy – najpóźniej od 1 stycznia 2030 r. Wynika to z rozporządzenia MSWiA z 21 listopada 2024 r.',
+  },
+  {
+    pytanie: 'Czujka czy czujnik dymu – czy to to samo?',
+    odpowiedz:
+      'Tak. Przepisy i strażacy mówią „autonomiczna czujka dymu”, potocznie mówi się „czujnik dymu” – chodzi o to samo urządzenie. Tak samo czujka czadu to inaczej czujnik tlenku węgla. Czym innym jest czujnik gazu: wykrywa ulatniający się gaz ziemny lub gaz z butli, a nie czad.',
+  },
+  {
+    pytanie: 'Kiedy potrzebna jest także czujka czadu?',
+    odpowiedz:
+      'Wszędzie tam, gdzie spala się paliwo stałe, ciekłe lub gazowe: w pomieszczeniu z kotłem gazowym, piecykiem łazienkowym, kominkiem, piecem kaflowym albo kozą. W mieszkaniu ogrzewanym z sieci, z kuchenką elektryczną, wystarcza zwykle sama czujka dymu.',
+  },
+  {
+    pytanie: 'Ile kosztuje czujka dymu z montażem?',
+    odpowiedz: `Czujka dymu kosztuje od ${cennik.czujkaDymu} zł, czujka czadu od ${cennik.czujkaCzadu} zł. Wizyta z montażem pierwszej czujki to ${cennik.wizyta} zł, montaż każdej kolejnej – ${cennik.montazKolejna} zł. Dokładną wycenę przygotowuję indywidualnie, bo zależy od modelu czujek, sufitów i dojazdu.`,
+    link: { href: 'wycena/', etykieta: 'Policz wycenę w kalkulatorze' },
+  },
+  {
+    pytanie: 'Ile czujek potrzeba w mieszkaniu?',
+    odpowiedz:
+      'Zwykle jedna czujka dymu na korytarz i po jednej na każdy pokój, w którym ktoś śpi. W domu piętrowym – co najmniej jedna na każdej kondygnacji. Czujka czadu: jedna na każde pomieszczenie z kotłem, piecykiem gazowym, kominkiem lub piecem.',
+  },
+  {
+    pytanie: 'Czy mogę zamontować czujkę samodzielnie?',
+    odpowiedz:
+      'Tak. Czujkę dymu zamontujesz w kwadrans, mając wiertarkę i dwa kołki – najważniejsze jest dobrze wybrane miejsce. Cały montaż opisałem krok po kroku w poradniku.',
+    link: { href: 'montaz-czujnikow/', etykieta: 'Jak zamontować czujniki dymu i czadu' },
+  },
+  {
+    pytanie: 'W jakich miejscowościach montujesz czujki?',
+    odpowiedz: `Do ${firma.zasieg.promienKm} km od Głogowa i Gaworzyc, między innymi: Polkowice, Lubin, Legnica, Nowa Sól, Zielona Góra, Wschowa, Leszno, Żary, Żagań, Bolesławiec i Wrocław. Przy większych zleceniach, na przykład dla całego bloku, dojeżdżam dalej.`,
+  },
+];
 ---
 
 <Base
-  tytul="Czujki dymu i czadu z montażem, szkolenia ppoż. – Głogów i okolice"
-  opis="Sprzedaż i montaż czujek dymu i czadu oraz szkolenia przeciwpożarowe dla mieszkańców, wspólnot i spółdzielni. Strażak OSP, dojazd do 100 km od Głogowa i Gaworzyc."
+  tytul="Czujki dymu i czadu z montażem – Głogów i okolice"
+  opis={`Sprzedaż i montaż czujek (czujników) dymu i czadu oraz szkolenia przeciwpożarowe dla mieszkańców i wspólnot. Strażak OSP, dojazd do ${firma.zasieg.promienKm} km od Głogowa i Gaworzyc.`}
+  schema={[pytania(faq)]}
 >
   <section class="hero">
     <div class="owijka hero__siatka">
       <div class="hero__tekst">
-        <h1><span>Dym nie budzi.</span> <span>Czujka tak.</span></h1>
+        <h1>
+          <span class="hero__nad">Czujki dymu i czadu z montażem – Głogów i okolice</span>
+          <span>Dym nie budzi.</span>
+          <span>Czujka tak.</span>
+        </h1>
         <p class="wstep">
           Sprzedaję i montuję czujki dymu i czadu w domach i mieszkaniach. Prowadzę też szkolenia, po których
           wiadomo, co zrobić, gdy alarm zadziała naprawdę.
@@ -157,7 +203,28 @@ const oferta = [
     </div>
   </section>
 
-  <section class="sekcja">
+  <section class="sekcja" id="pytania">
+    <div class="owijka">
+      <div class="sekcja__naglowek">
+        <h2>Najczęstsze pytania o czujki dymu i czadu</h2>
+      </div>
+      <ul class="pytania">
+        {
+          faq.map((p) => (
+            <li>
+              <h3>{p.pytanie}</h3>
+              <div>
+                <p>{p.odpowiedz}</p>
+                {p.link && <a href={adres(p.link.href)}>{p.link.etykieta}</a>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="sekcja sekcja--papier">
     <div class="owijka koniec">
       <h2>Sprawdź, ile kosztuje zabezpieczenie Twojego mieszkania</h2>
       <p class="wstep">
@@ -197,6 +264,17 @@ const oferta = [
 
   .hero__tekst h1 span {
     display: block;
+  }
+
+  /* nadtytuł: mówi wprost, czym jest strona – hasło zostaje pod nim */
+  .hero__tekst h1 .hero__nad {
+    margin-bottom: var(--o-2);
+    font-family: var(--kroj);
+    font-size: var(--t-s);
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0;
+    color: var(--tusz-2);
   }
 
   .hero__fakty {
@@ -262,6 +340,45 @@ const oferta = [
 
     .oferta__link {
       justify-self: end;
+    }
+  }
+
+  /* pytania: ten sam układ wierszy co oferta – pytanie po lewej, odpowiedź po prawej */
+  .pytania {
+    list-style: none;
+    padding: 0;
+    border-top: 2px solid var(--tusz);
+  }
+
+  .pytania li {
+    display: grid;
+    gap: 0.75rem;
+    padding-block: var(--o-3);
+    border-bottom: 1px solid var(--dym);
+  }
+
+  .pytania h3 {
+    font-size: var(--t-l);
+    line-height: 1.15;
+  }
+
+  .pytania p {
+    color: var(--tusz-2);
+    max-width: 42rem;
+  }
+
+  .pytania a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 56rem) {
+    .pytania li {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--o-4);
+      align-items: baseline;
     }
   }
 

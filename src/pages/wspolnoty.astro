@@ -3,6 +3,10 @@ import Icon from '../components/Icon.astro';
 import Photo from '../components/Photo.astro';
 import { adres, firma, linkEmail, linkTelefon } from '../config';
 import Base from '../layouts/Base.astro';
+import { usluga } from '../seo';
+
+const opis =
+  'Montaż czujek dymu i czadu w całym budynku przed 1 stycznia 2030 r.: jedna wycena, montaż klatka po klatce, protokół dla zarządu i szkolenie mieszkańców.';
 
 const etapy = [
   {
@@ -33,8 +37,17 @@ const etapy = [
 ---
 
 <Base
-  tytul="Czujki dymu i czadu dla wspólnot i spółdzielni mieszkaniowych"
-  opis="Montaż czujek dymu i czadu w całym budynku przed 1 stycznia 2030 r.: jedna wycena, montaż klatka po klatce, protokół dla zarządu i szkolenie mieszkańców."
+  tytul="Czujki dymu i czadu dla wspólnot i spółdzielni"
+  opis={opis}
+  schema={[
+    usluga(Astro.site, {
+      nazwa: 'Montaż czujek dymu i czadu dla wspólnot i spółdzielni mieszkaniowych',
+      opis,
+      rodzaj: 'Montaż czujek dymu i czadu',
+      sciezka: 'wspolnoty/',
+      dlaKogo: 'Wspólnoty i spółdzielnie mieszkaniowe',
+    }),
+  ]}
 >
   <section class="czolo">
     <div class="owijka dwie dwie--szeroka-waska">

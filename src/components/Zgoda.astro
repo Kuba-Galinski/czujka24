@@ -1,0 +1,196 @@
+---
+/**
+ * Okienko zgody na statystyki (Google Analytics) i sam tag Google.
+ *  - Bez zgody strona nie wczytuje nic z Google i nie zapisuje plików cookies.
+ *  - Decyzja jest pamiętana w przeglądarce (localStorage) przez rok; zmienia się ją w stopce ("Ustawienia cookies").
+ *  - Tag wczytuje się tylko pod właściwą domeną, żeby podgląd lokalny nie zaśmiecał statystyk.
+ * Identyfikator tagu: src/config.ts → tagGoogle. Pusty = okienka i statystyk nie ma.
+ */
+import { adres, firma } from '../config';
+---
+
+{
+  firma.tagGoogle && (
+    <aside
+      class="zgoda"
+      hidden
+      tabindex="-1"
+      aria-labelledby="zgoda-tytul"
+      data-zgoda
+      data-tag={firma.tagGoogle}
+      data-domena={firma.domena}
+    >
+      <div class="zgoda__tresc">
+        <p class="zgoda__tytul" id="zgoda-tytul">
+          Czy mogę policzyć Twoją wizytę?
+        </p>
+        <p>
+          Jeśli się zgodzisz, strona włączy Google Analytics i zapisze pliki cookies. Służą tylko do statystyk
+          odwiedzin – bez reklam. Zgodę cofniesz w każdej chwili w stopce strony.{' '}
+          <a href={adres('polityka-prywatnosci/#cookies')}>Polityka prywatności</a>
+        </p>
+      </div>
+      <div class="zgoda__przyciski">
+        <button class="przycisk przycisk--obrys" type="button" data-zgoda-tak>
+          Zgadzam się
+        </button>
+        <button class="przycisk przycisk--obrys" type="button" data-zgoda-nie>
+          Nie zgadzam się
+        </button>
+      </div>
+    </aside>
+  )
+}
+
+<script>
+  type Decyzja = 'tak' | 'nie';
+
+  const KLUCZ = 'czujka24-zgoda';
+  const ROK = 365 * 86_400_000;
+
+  const okno = document.querySelector<HTMLElement>('[data-zgoda]');
+
+  if (okno) {
+    const tag = okno.dataset.tag!;
+    const domena = okno.dataset.domena!;
+    const strona = window as typeof window & { dataLayer?: unknown[] };
+
+    strona.dataLayer = strona.dataLayer || [];
+    // Tag Google rozpoznaje polecenia po obiekcie `arguments`, dlatego nie jest to zwykła tablica.
+    function gtag(..._polecenie: unknown[]) {
+      // eslint-disable-next-line prefer-rest-params
+      strona.dataLayer!.push(arguments);
+    }
+
+    const odczytaj = (): Decyzja | null => {
+      try {
+        const zapis = JSON.parse(localStorage.getItem(KLUCZ) ?? 'null');
+        const wazna = zapis && Date.now() - Number(zapis.kiedy) < ROK;
+        if (wazna && (zapis.decyzja === 'tak' || zapis.decyzja === 'nie')) return zapis.decyzja;
+      } catch {
+        // brak dostępu do pamięci przeglądarki = pytamy przy każdej wizycie
+      }
+      return null;
+    };
+
+    const zapisz = (decyzja: Decyzja) => {
+      try {
+        localStorage.setItem(KLUCZ, JSON.stringify({ decyzja, kiedy: Date.now() }));
+      } catch {
+        // jak wyżej
+      }
+    };
+
+    let wczytany = false;
+
+    const wlacz = () => {
+      if (wczytany) {
+        gtag('consent', 'update', { analytics_storage: 'granted' });
+        return;
+      }
+      if (location.hostname !== domena && location.hostname !== `www.${domena}`) return;
+      wczytany = true;
+
+      // Tylko statystyki. Wszystko, co dotyczy reklam, zostaje wyłączone.
+      gtag('consent', 'default', {
+        analytics_storage: 'granted',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+      gtag('js', new Date());
+
+      const skrypt = document.createElement('script');
+      skrypt.async = true;
+      skrypt.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(tag)}`;
+      document.head.append(skrypt);
+    };
+
+    const wylacz = () => {
+      if (wczytany) gtag('consent', 'update', { analytics_storage: 'denied' });
+
+      // Usuwa pliki cookies Google Analytics zapisane przy wcześniejszej zgodzie.
+      for (const wpis of document.cookie.split(';')) {
+        const nazwa = wpis.split('=')[0].trim();
+        if (nazwa !== '_ga' && !nazwa.startsWith('_ga_')) continue;
+        for (const zakres of ['', `; domain=${location.hostname}`, `; domain=.${domena}`]) {
+          document.cookie = `${nazwa}=; Max-Age=0; path=/${zakres}`;
+        }
+      }
+    };
+
+    const zdecyduj = (decyzja: Decyzja) => {
+      zapisz(decyzja);
+      if (decyzja === 'tak') wlacz();
+      else wylacz();
+      okno.hidden = true;
+    };
+
+    okno.querySelector('[data-zgoda-tak]')?.addEventListener('click', () => zdecyduj('tak'));
+    okno.querySelector('[data-zgoda-nie]')?.addEventListener('click', () => zdecyduj('nie'));
+
+    // "Ustawienia cookies" w stopce: pokazuje okienko ponownie.
+    document.querySelectorAll('[data-zgoda-otworz]').forEach((przycisk) =>
+      przycisk.addEventListener('click', () => {
+        okno.hidden = false;
+        okno.focus();
+      }),
+    );
+
+    const decyzja = odczytaj();
+    if (decyzja === 'tak') wlacz();
+    else if (decyzja === null) okno.hidden = false;
+  }
+</script>
+
+<style>
+  .zgoda {
+    position: fixed;
+    left: var(--margines);
+    right: var(--margines);
+    bottom: var(--margines);
+    z-index: 60;
+    display: grid;
+    gap: var(--o-2);
+    max-width: 38rem;
+    padding: var(--o-3);
+    background: var(--papier);
+    border: var(--linia);
+    border-radius: var(--r);
+    box-shadow: 0 10px 30px rgb(23 33 43 / 0.2);
+    font-size: var(--t-s);
+    line-height: 1.45;
+  }
+
+  .zgoda[hidden] {
+    display: none;
+  }
+
+  .zgoda__tytul {
+    margin-bottom: 0.35rem;
+    font-family: var(--kroj-waski);
+    font-size: var(--t-l);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .zgoda__przyciski {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* obie odpowiedzi wyglądają tak samo – odmowa jest równie łatwa jak zgoda */
+  .zgoda__przyciski .przycisk {
+    flex: 1 1 11rem;
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    font-size: var(--t-s);
+  }
+
+  @media print {
+    .zgoda {
+      display: none;
+    }
+  }
+</style>

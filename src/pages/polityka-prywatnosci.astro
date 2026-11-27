@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 
 const a = firma.administrator;
 const formularzWTle = Boolean(firma.web3formsKlucz);
+const statystyki = Boolean(firma.tagGoogle);
 ---
 
 <Base tytul="Polityka prywatności" opis="Jakie dane zbiera strona czujka24.pl, po co i jak długo są przechowywane.">
@@ -11,8 +12,12 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
     <div class="owijka">
       <h1>Polityka prywatności</h1>
       <p class="wstep">
-        Krótko: dane, które podajesz, służą do odpowiedzi na Twoje zapytanie i wykonania usługi. Strona nie
-        śledzi odwiedzających.
+        Krótko: dane, które podajesz, służą do odpowiedzi na Twoje zapytanie i wykonania usługi.{' '}
+        {
+          statystyki
+            ? 'Statystyki odwiedzin włączają się tylko wtedy, gdy się na nie zgodzisz.'
+            : 'Strona nie śledzi odwiedzających.'
+        }
       </p>
     </div>
   </section>
@@ -40,9 +45,10 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
 
       <h2>Jakie dane, po co i na jakiej podstawie</h2>
       <p>
-        Przetwarzam tylko dane, które sam podajesz – przez formularz, e-mail, telefon albo WhatsApp: imię
-        i nazwisko lub nazwę, numer telefonu, adres e-mail, miejscowość, treść wiadomości, a przy zleceniu także
-        adres montażu lub szkolenia i dane do faktury.
+        Przetwarzam {!statystyki && 'tylko '}dane, które sam podajesz – przez formularz, e-mail, telefon albo
+        WhatsApp: imię i nazwisko lub nazwę, numer telefonu, adres e-mail, miejscowość, treść wiadomości, a przy
+        zleceniu także adres montażu lub szkolenia i dane do faktury.
+        {statystyki && ' Jeśli zgodzisz się na statystyki, dochodzą do tego dane o Twojej wizycie na stronie.'}
       </p>
       <ul class="lista">
         <li>
@@ -62,6 +68,14 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
           <strong>Ustalenie, dochodzenie i obrona roszczeń</strong> – mój uzasadniony interes (art. 6 ust. 1
           lit. f RODO).
         </li>
+        {
+          statystyki && (
+            <li>
+              <strong>Statystyki odwiedzin strony</strong> – wyłącznie na podstawie Twojej zgody (art. 6 ust. 1
+              lit. a RODO). Szczegóły są w części <a href="#cookies">Pliki cookies i statystyki</a>.
+            </li>
+          )
+        }
       </ul>
       <p>
         Podanie danych jest dobrowolne. Bez danych kontaktowych nie mogę jednak odpowiedzieć na zapytanie,
@@ -75,6 +89,14 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
         <li>
           Dokumenty księgowe – 5 lat, licząc od końca roku, w którym upłynął termin płatności podatku.
         </li>
+        {
+          statystyki && (
+            <li>
+              Dane o pojedynczych wizytach w Google Analytics – nie dłużej niż 14 miesięcy. Dłużej zostają
+              tylko zbiorcze zestawienia, na przykład liczba odwiedzin w miesiącu.
+            </li>
+          )
+        }
       </ul>
 
       <h2>Komu dane są przekazywane</h2>
@@ -88,6 +110,14 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
           <strong>Google (Gmail)</strong> – wiadomości przychodzące na {firma.email} są przekazywane na skrzynkę
           w usłudze Gmail.
         </li>
+        {
+          statystyki && (
+            <li>
+              <strong>Google (Analytics)</strong> – statystyki odwiedzin, tylko jeśli wyrazisz na nie zgodę.
+              Usługę dostarcza Google Ireland Limited.
+            </li>
+          )
+        }
         {
           formularzWTle && (
             <li>
@@ -132,8 +162,16 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
         <li>usunięcia danych lub ograniczenia ich przetwarzania,</li>
         <li>przeniesienia danych – gdy podstawą przetwarzania jest umowa,</li>
         <li>
-          sprzeciwu wobec przetwarzania – gdy podstawą jest uzasadniony interes administratora.
+          sprzeciwu wobec przetwarzania – gdy podstawą jest uzasadniony interes administratora{statystyki ? ',' : '.'}
         </li>
+        {
+          statystyki && (
+            <li>
+              cofnięcia zgody na statystyki w dowolnej chwili – przyciskiem „Ustawienia cookies” w stopce
+              strony. Cofnięcie zgody nie wpływa na zgodność z prawem tego, co działo się przed nim.
+            </li>
+          )
+        }
       </ul>
       <p>
         Wystarczy wiadomość na <a href={linkEmail}>{firma.email}</a>. Możesz też wnieść skargę do Prezesa Urzędu
@@ -146,13 +184,48 @@ const formularzWTle = Boolean(firma.web3formsKlucz);
         oferty liczy cenę w Twojej przeglądarce i niczego nie wysyła, dopóki sam nie wyślesz formularza.
       </p>
 
-      <h2>Pliki cookies i statystyki</h2>
-      <p>
-        Strona nie używa plików cookies, narzędzi analitycznych ani reklam. Czcionki są ładowane z tego samego
-        serwera co strona.
-      </p>
+      <h2 id="cookies">Pliki cookies i statystyki</h2>
+      {
+        statystyki ? (
+          <>
+            <p>
+              Dopóki się nie zgodzisz, strona nie zapisuje plików cookies i nie łączy się z żadnym narzędziem
+              analitycznym. Reklam na stronie nie ma. Czcionki są ładowane z tego samego serwera co strona.
+            </p>
+            <p>
+              Jeśli w okienku na dole strony wybierzesz „Zgadzam się”, strona włączy Google Analytics.
+              Dzięki temu wiem, ile osób odwiedza stronę i które jej części są czytane. Narzędzie zbiera:
+            </p>
+            <ul class="lista">
+              <li>odwiedzone podstrony i czas wizyty,</li>
+              <li>źródło wejścia, na przykład wyszukiwarkę albo link z innej strony,</li>
+              <li>rodzaj urządzenia i przeglądarki oraz przybliżoną lokalizację – nie dokładniej niż miasto,</li>
+              <li>
+                przewijanie strony, kliknięcia w linki prowadzące poza stronę i sam fakt wysłania formularza –
+                bez jego treści.
+              </li>
+            </ul>
+            <p>
+              Google Analytics zapisuje w przeglądarce pliki cookies o nazwach zaczynających się od{' '}
+              <code>_ga</code>. Pozwalają odróżnić nową wizytę od kolejnej i wygasają najpóźniej po 2 latach.
+              Adres IP nie jest zapisywany. Funkcje reklamowe i łączenie danych z kontem Google są wyłączone.
+            </p>
+            <p>
+              Twoją decyzję – zgodę albo odmowę – strona zapamiętuje w pamięci przeglądarki na 12 miesięcy,
+              żeby nie pytać przy każdej wizycie. Zmienisz ją w każdej chwili przyciskiem „Ustawienia cookies”
+              w stopce. Po cofnięciu zgody strona usuwa pliki cookies Google Analytics i przestaje wysyłać
+              dane.
+            </p>
+          </>
+        ) : (
+          <p>
+            Strona nie używa plików cookies, narzędzi analitycznych ani reklam. Czcionki są ładowane z tego
+            samego serwera co strona.
+          </p>
+        )
+      }
 
-      <p class="przypis">Ostatnia aktualizacja: 21 listopada 2026 r.</p>
+      <p class="przypis">Ostatnia aktualizacja: 27 listopada 2026 r.</p>
     </div>
   </section>
 </Base>

@@ -3,12 +3,13 @@ import ContactForm from '../components/ContactForm.astro';
 import Icon from '../components/Icon.astro';
 import Kalkulator from '../components/Kalkulator.astro';
 import { firma, linkEmail, linkMessenger, linkTelefon, linkWhatsapp } from '../config';
+import { cennik } from '../data/cennik';
 import Base from '../layouts/Base.astro';
 ---
 
 <Base
-  tytul="Wycena i kontakt – kalkulator czujek dymu i czadu"
-  opis="Policz orientacyjny koszt czujek dymu i czadu z montażem oraz szkolenia. Dokładna wycena indywidualnie – telefon, formularz, e-mail, WhatsApp."
+  tytul="Cennik i kalkulator: czujki dymu i czadu z montażem"
+  opis={`Czujka dymu od ${cennik.czujkaDymu} zł, czujka czadu od ${cennik.czujkaCzadu} zł, wizyta z montażem pierwszej czujki ${cennik.wizyta} zł. Policz koszt w kalkulatorze i wyślij zapytanie albo zadzwoń.`}
 >
   <section class="czolo">
     <div class="owijka">
