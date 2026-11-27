@@ -1,10 +1,10 @@
 ---
 /**
- * Okienko zgody na statystyki (Google Analytics) i sam tag Google.
+ * Belka zgody na pliki cookies (statystyki Google Analytics) i sam tag Google.
  *  - Bez zgody strona nie wczytuje nic z Google i nie zapisuje plików cookies.
  *  - Decyzja jest pamiętana w przeglądarce (localStorage) przez rok; zmienia się ją w stopce ("Ustawienia cookies").
  *  - Tag wczytuje się tylko pod właściwą domeną, żeby podgląd lokalny nie zaśmiecał statystyk.
- * Identyfikator tagu: src/config.ts → tagGoogle. Pusty = okienka i statystyk nie ma.
+ * Identyfikator tagu: src/config.ts → tagGoogle. Pusty = belki i statystyk nie ma.
  */
 import { adres, firma } from '../config';
 ---
@@ -15,28 +15,25 @@ import { adres, firma } from '../config';
       class="zgoda"
       hidden
       tabindex="-1"
-      aria-labelledby="zgoda-tytul"
+      aria-label="Pliki cookies"
       data-zgoda
       data-tag={firma.tagGoogle}
       data-domena={firma.domena}
     >
-      <div class="zgoda__tresc">
-        <p class="zgoda__tytul" id="zgoda-tytul">
-          Czy mogę policzyć Twoją wizytę?
+      <div class="owijka zgoda__wiersz">
+        <p class="zgoda__tresc">
+          Ta strona korzysta z plików cookies w celach statystycznych. Możesz je zaakceptować lub odrzucić.
+          Więcej informacji znajdziesz w{' '}
+          <a href={adres('polityka-prywatnosci/#cookies')}>polityce prywatności</a>.
         </p>
-        <p>
-          Jeśli się zgodzisz, strona włączy Google Analytics i zapisze pliki cookies. Służą tylko do statystyk
-          odwiedzin – bez reklam. Zgodę cofniesz w każdej chwili w stopce strony.{' '}
-          <a href={adres('polityka-prywatnosci/#cookies')}>Polityka prywatności</a>
-        </p>
-      </div>
-      <div class="zgoda__przyciski">
-        <button class="przycisk przycisk--obrys" type="button" data-zgoda-tak>
-          Zgadzam się
-        </button>
-        <button class="przycisk przycisk--obrys" type="button" data-zgoda-nie>
-          Nie zgadzam się
-        </button>
+        <div class="zgoda__przyciski">
+          <button class="przycisk przycisk--obrys" type="button" data-zgoda-tak>
+            Akceptuję
+          </button>
+          <button class="przycisk przycisk--obrys" type="button" data-zgoda-nie>
+            Odrzucam
+          </button>
+        </div>
       </div>
     </aside>
   )
@@ -129,7 +126,7 @@ import { adres, firma } from '../config';
     okno.querySelector('[data-zgoda-tak]')?.addEventListener('click', () => zdecyduj('tak'));
     okno.querySelector('[data-zgoda-nie]')?.addEventListener('click', () => zdecyduj('nie'));
 
-    // "Ustawienia cookies" w stopce: pokazuje okienko ponownie.
+    // "Ustawienia cookies" w stopce: pokazuje belkę ponownie.
     document.querySelectorAll('[data-zgoda-otworz]').forEach((przycisk) =>
       przycisk.addEventListener('click', () => {
         okno.hidden = false;
@@ -144,20 +141,17 @@ import { adres, firma } from '../config';
 </script>
 
 <style>
+  /* belka przyklejona do dolnej krawędzi okna, na całą szerokość */
   .zgoda {
     position: fixed;
-    left: var(--margines);
-    right: var(--margines);
-    bottom: var(--margines);
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 60;
-    display: grid;
-    gap: var(--o-2);
-    max-width: 38rem;
-    padding: var(--o-3);
+    padding-block: var(--o-2);
     background: var(--papier);
-    border: var(--linia);
-    border-radius: var(--r);
-    box-shadow: 0 10px 30px rgb(23 33 43 / 0.2);
+    border-top: var(--linia);
+    box-shadow: 0 -6px 20px rgb(23 33 43 / 0.12);
     font-size: var(--t-s);
     line-height: 1.45;
   }
@@ -166,26 +160,42 @@ import { adres, firma } from '../config';
     display: none;
   }
 
-  .zgoda__tytul {
-    margin-bottom: 0.35rem;
-    font-family: var(--kroj-waski);
-    font-size: var(--t-l);
-    font-weight: 800;
-    line-height: 1.1;
+  .zgoda__wiersz {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem var(--o-4);
+  }
+
+  .zgoda__tresc {
+    flex: 1 1 24rem;
+    max-width: 46rem;
   }
 
   .zgoda__przyciski {
     display: flex;
-    flex-wrap: wrap;
+    flex: 1 1 auto;
     gap: 0.75rem;
   }
 
   /* obie odpowiedzi wyglądają tak samo – odmowa jest równie łatwa jak zgoda */
   .zgoda__przyciski .przycisk {
-    flex: 1 1 11rem;
+    flex: 1 1 8rem;
     min-height: 2.75rem;
     padding-block: 0.5rem;
     font-size: var(--t-s);
+  }
+
+  @media (min-width: 56rem) {
+    .zgoda__przyciski {
+      flex: 0 0 auto;
+    }
+
+    .zgoda__przyciski .przycisk {
+      flex: 0 0 auto;
+      min-width: 9rem;
+    }
   }
 
   @media print {

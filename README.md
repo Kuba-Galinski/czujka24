@@ -79,7 +79,7 @@ Workflow sam pobiera adres strony z ustawień Pages, więc w kodzie nie ma nic d
   tylko dla alarmu i głównego przycisku. Okrąg jest zarezerwowany dla czujki.
 - Kroje: Sofia Sans Condensed (nagłówki) i Sofia Sans (tekst), hostowane lokalnie – bez Google Fonts.
 - Bez reklam. Jedyny zewnętrzny skrypt to tag Google (statystyki Google Analytics) – wczytuje się
-  dopiero po zgodzie w okienku na dole strony i tylko pod domeną `czujka24.pl`
+  dopiero po zgodzie na belce na dole strony i tylko pod domeną `czujka24.pl`
   (`src/components/Zgoda.astro`, identyfikator `tagGoogle` w `src/config.ts`; pusty wyłącza statystyki).
   Bez zgody strona nie zapisuje cookies i nie łączy się z Google.
 

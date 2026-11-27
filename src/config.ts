@@ -35,7 +35,7 @@ export const firma = {
   /**
    * Identyfikator tagu Google (statystyki Google Analytics), np. "GTM-XXXXXXXX".
    * Tag wczytuje się dopiero po zgodzie odwiedzającego – patrz src/components/Zgoda.astro.
-   * Pusty = strona bez statystyk, bez okienka zgody i bez plików cookies.
+   * Pusty = strona bez statystyk, bez belki zgody i bez plików cookies.
    */
   tagGoogle: 'GTM-MX95F8RT',
 
