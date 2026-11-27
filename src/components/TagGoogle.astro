@@ -1,0 +1,49 @@
+---
+/**
+ * Tag Google (statystyki Google Analytics) w nagłówku każdej strony – w postaci, jaką podaje Google.
+ * Tag wczytuje się zawsze, ale to, co wolno mu robić, zależy od decyzji z belki cookies (Zgoda.astro):
+ *  - brak decyzji  → pomiar uproszczony: bez plików cookies i bez rozpoznawania powracających osób,
+ *  - "Akceptuję"   → pełne statystyki z plikami cookies,
+ *  - "Odrzucam"    → pomiar wyłączony całkowicie, do Google Analytics nic nie jest wysyłane.
+ * Poza właściwą domeną (podgląd lokalny, github.io) pomiar też jest wyłączony, żeby nie zaśmiecać statystyk.
+ * Funkcje reklamowe są wyłączone zawsze.
+ * Identyfikatory: src/config.ts → tagGoogle i pomiarGoogle. Pusty tagGoogle = strona bez tagu.
+ */
+import { firma, kluczZgody } from '../config';
+
+const ustawienia = { klucz: kluczZgody, pomiar: firma.pomiarGoogle, domena: firma.domena };
+---
+
+{
+  firma.tagGoogle && (
+    <>
+      <script is:inline define:vars={ustawienia}>
+        var decyzja = '';
+        try {
+          var zapis = JSON.parse(localStorage.getItem(klucz) || 'null');
+          var wazna = zapis && Date.now() - Number(zapis.kiedy) < 365 * 86400000;
+          if (wazna && (zapis.decyzja === 'tak' || zapis.decyzja === 'nie')) decyzja = zapis.decyzja;
+        } catch (blad) {
+          /* brak dostępu do pamięci przeglądarki = pytamy przy każdej wizycie */
+        }
+        document.documentElement.dataset.cookies = decyzja;
+
+        var uSiebie = location.hostname === domena || location.hostname === 'www.' + domena;
+        if (decyzja === 'nie' || !uSiebie) window['ga-disable-' + pomiar] = true;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag('consent', 'default', {
+          analytics_storage: decyzja === 'tak' ? 'granted' : 'denied',
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+        });
+        window.gtag('js', new Date());
+      </script>
+      <script is:inline async src={`https://www.googletagmanager.com/gtm.js?id=${firma.tagGoogle}`} />
+    </>
+  )
+}

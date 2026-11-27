@@ -1,12 +1,12 @@
 ---
 /**
- * Belka zgody na pliki cookies (statystyki Google Analytics) i sam tag Google.
- *  - Bez zgody strona nie wczytuje nic z Google i nie zapisuje plików cookies.
+ * Belka cookies: decyzja o statystykach Google Analytics.
+ *  - Sam tag Google jest w nagłówku strony (TagGoogle.astro); tam też opisane są trzy stany pomiaru.
  *  - Decyzja jest pamiętana w przeglądarce (localStorage) przez rok; zmienia się ją w stopce ("Ustawienia cookies").
- *  - Tag wczytuje się tylko pod właściwą domeną, żeby podgląd lokalny nie zaśmiecał statystyk.
- * Identyfikator tagu: src/config.ts → tagGoogle. Pusty = belki i statystyk nie ma.
+ *  - "Odrzucam" wyłącza pomiar całkowicie i usuwa pliki cookies Google Analytics.
+ * Pusty tagGoogle w src/config.ts = belki nie ma.
  */
-import { adres, firma } from '../config';
+import { adres, firma, kluczZgody } from '../config';
 ---
 
 {
@@ -17,7 +17,8 @@ import { adres, firma } from '../config';
       tabindex="-1"
       aria-label="Pliki cookies"
       data-zgoda
-      data-tag={firma.tagGoogle}
+      data-klucz={kluczZgody}
+      data-pomiar={firma.pomiarGoogle}
       data-domena={firma.domena}
     >
       <div class="owijka zgoda__wiersz">
@@ -42,69 +43,32 @@ import { adres, firma } from '../config';
 <script>
   type Decyzja = 'tak' | 'nie';
 
-  const KLUCZ = 'czujka24-zgoda';
-  const ROK = 365 * 86_400_000;
-
   const okno = document.querySelector<HTMLElement>('[data-zgoda]');
 
   if (okno) {
-    const tag = okno.dataset.tag!;
+    const klucz = okno.dataset.klucz!;
     const domena = okno.dataset.domena!;
-    const strona = window as typeof window & { dataLayer?: unknown[] };
-
-    strona.dataLayer = strona.dataLayer || [];
-    // Tag Google rozpoznaje polecenia po obiekcie `arguments`, dlatego nie jest to zwykła tablica.
-    function gtag(..._polecenie: unknown[]) {
-      // eslint-disable-next-line prefer-rest-params
-      strona.dataLayer!.push(arguments);
-    }
-
-    const odczytaj = (): Decyzja | null => {
-      try {
-        const zapis = JSON.parse(localStorage.getItem(KLUCZ) ?? 'null');
-        const wazna = zapis && Date.now() - Number(zapis.kiedy) < ROK;
-        if (wazna && (zapis.decyzja === 'tak' || zapis.decyzja === 'nie')) return zapis.decyzja;
-      } catch {
-        // brak dostępu do pamięci przeglądarki = pytamy przy każdej wizycie
-      }
-      return null;
-    };
+    // Tym przełącznikiem Google Analytics pozwala wyłączyć pomiar na stronie całkowicie.
+    const wylacznik = `ga-disable-${okno.dataset.pomiar}`;
+    const strona = window as unknown as Record<string, unknown> & { gtag?: (...polecenie: unknown[]) => void };
+    const uSiebie = location.hostname === domena || location.hostname === `www.${domena}`;
 
     const zapisz = (decyzja: Decyzja) => {
       try {
-        localStorage.setItem(KLUCZ, JSON.stringify({ decyzja, kiedy: Date.now() }));
+        localStorage.setItem(klucz, JSON.stringify({ decyzja, kiedy: Date.now() }));
       } catch {
-        // jak wyżej
+        // brak dostępu do pamięci przeglądarki = pytamy przy każdej wizycie
       }
     };
 
-    let wczytany = false;
-
     const wlacz = () => {
-      if (wczytany) {
-        gtag('consent', 'update', { analytics_storage: 'granted' });
-        return;
-      }
-      if (location.hostname !== domena && location.hostname !== `www.${domena}`) return;
-      wczytany = true;
-
-      // Tylko statystyki. Wszystko, co dotyczy reklam, zostaje wyłączone.
-      gtag('consent', 'default', {
-        analytics_storage: 'granted',
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-      });
-      gtag('js', new Date());
-
-      const skrypt = document.createElement('script');
-      skrypt.async = true;
-      skrypt.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(tag)}`;
-      document.head.append(skrypt);
+      strona[wylacznik] = !uSiebie;
+      strona.gtag?.('consent', 'update', { analytics_storage: 'granted' });
     };
 
     const wylacz = () => {
-      if (wczytany) gtag('consent', 'update', { analytics_storage: 'denied' });
+      strona.gtag?.('consent', 'update', { analytics_storage: 'denied' });
+      strona[wylacznik] = true;
 
       // Usuwa pliki cookies Google Analytics zapisane przy wcześniejszej zgodzie.
       for (const wpis of document.cookie.split(';')) {
@@ -134,9 +98,8 @@ import { adres, firma } from '../config';
       }),
     );
 
-    const decyzja = odczytaj();
-    if (decyzja === 'tak') wlacz();
-    else if (decyzja === null) okno.hidden = false;
+    // Zapamiętaną decyzję odczytuje skrypt w nagłówku strony (TagGoogle.astro).
+    if (!document.documentElement.dataset.cookies) okno.hidden = false;
   }
 </script>
 

@@ -15,7 +15,7 @@ const statystyki = Boolean(firma.tagGoogle);
         Krótko: dane, które podajesz, służą do odpowiedzi na Twoje zapytanie i wykonania usługi.{' '}
         {
           statystyki
-            ? 'Statystyki odwiedzin włączają się tylko wtedy, gdy się na nie zgodzisz.'
+            ? 'Statystyki z plikami cookies włączają się tylko za Twoją zgodą, a pomiar odwiedzin wyłączysz jednym kliknięciem.'
             : 'Strona nie śledzi odwiedzających.'
         }
       </p>
@@ -48,7 +48,7 @@ const statystyki = Boolean(firma.tagGoogle);
         Przetwarzam {!statystyki && 'tylko '}dane, które sam podajesz – przez formularz, e-mail, telefon albo
         WhatsApp: imię i nazwisko lub nazwę, numer telefonu, adres e-mail, miejscowość, treść wiadomości, a przy
         zleceniu także adres montażu lub szkolenia i dane do faktury.
-        {statystyki && ' Jeśli zgodzisz się na statystyki, dochodzą do tego dane o Twojej wizycie na stronie.'}
+        {statystyki && ' Do tego dochodzą dane o samej wizycie na stronie – opisane niżej, w części o plikach cookies.'}
       </p>
       <ul class="lista">
         <li>
@@ -71,8 +71,10 @@ const statystyki = Boolean(firma.tagGoogle);
         {
           statystyki && (
             <li>
-              <strong>Statystyki odwiedzin strony</strong> – wyłącznie na podstawie Twojej zgody (art. 6 ust. 1
-              lit. a RODO). Szczegóły są w części <a href="#cookies">Pliki cookies i statystyki</a>.
+              <strong>Statystyki odwiedzin strony</strong> – pełne statystyki z plikami cookies wyłącznie na
+              podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO). Pomiar uproszczony, bez plików cookies,
+              opiera się na moim uzasadnionym interesie: chcę wiedzieć, ile osób odwiedza stronę (art. 6
+              ust. 1 lit. f RODO). Szczegóły są w części <a href="#cookies">Pliki cookies i statystyki</a>.
             </li>
           )
         }
@@ -113,8 +115,8 @@ const statystyki = Boolean(firma.tagGoogle);
         {
           statystyki && (
             <li>
-              <strong>Google (Analytics)</strong> – statystyki odwiedzin, tylko jeśli wyrazisz na nie zgodę.
-              Usługę dostarcza Google Ireland Limited.
+              <strong>Google (Analytics)</strong> – statystyki odwiedzin. Po odrzuceniu plików cookies nic
+              nie jest tam wysyłane. Usługę dostarcza Google Ireland Limited.
             </li>
           )
         }
@@ -167,8 +169,9 @@ const statystyki = Boolean(firma.tagGoogle);
         {
           statystyki && (
             <li>
-              cofnięcia zgody na statystyki w dowolnej chwili – przyciskiem „Ustawienia cookies” w stopce
-              strony. Cofnięcie zgody nie wpływa na zgodność z prawem tego, co działo się przed nim.
+              cofnięcia zgody na statystyki i wyłączenia pomiaru w dowolnej chwili – przyciskiem
+              „Ustawienia cookies” w stopce strony. Cofnięcie zgody nie wpływa na zgodność z prawem tego,
+              co działo się przed nim.
             </li>
           )
         }
@@ -189,13 +192,28 @@ const statystyki = Boolean(firma.tagGoogle);
         statystyki ? (
           <>
             <p>
-              Dopóki się nie zgodzisz, strona nie zapisuje plików cookies i nie łączy się z żadnym narzędziem
-              analitycznym. Reklam na stronie nie ma. Czcionki są ładowane z tego samego serwera co strona.
+              Strona korzysta z Google Analytics. Dzięki temu wiem, ile osób ją odwiedza i które jej części
+              są czytane. Reklam na stronie nie ma. Czcionki są ładowane z tego samego serwera co strona.
             </p>
-            <p>
-              Jeśli na belce na dole strony wybierzesz „Akceptuję”, strona włączy Google Analytics.
-              Dzięki temu wiem, ile osób odwiedza stronę i które jej części są czytane. Narzędzie zbiera:
-            </p>
+            <p>O zakresie pomiaru decydujesz na belce na dole strony:</p>
+            <ul class="lista">
+              <li>
+                <strong>Dopóki nie wybierzesz – pomiar uproszczony.</strong> Strona nie zapisuje plików
+                cookies. Google Analytics dostaje tylko podstawową informację o wizycie: odwiedzoną podstronę,
+                źródło wejścia oraz rodzaj urządzenia i przeglądarki. Bez plików cookies narzędzie nie
+                rozpoznaje Cię przy kolejnej wizycie.
+              </li>
+              <li>
+                <strong>„Akceptuję” – pełne statystyki.</strong> Strona zapisuje pliki cookies Google
+                Analytics, dzięki którym narzędzie odróżnia nową wizytę od kolejnej.
+              </li>
+              <li>
+                <strong>„Odrzucam” – pomiar wyłączony.</strong> Do Google Analytics nie jest wysyłane nic,
+                a zapisane wcześniej pliki cookies są usuwane. Przeglądarka nadal pobiera z serwera Google
+                sam plik skryptu, ale nie przekazuje on żadnych danych o wizycie.
+              </li>
+            </ul>
+            <p>Przy pełnych statystykach narzędzie zbiera:</p>
             <ul class="lista">
               <li>odwiedzone podstrony i czas wizyty,</li>
               <li>źródło wejścia, na przykład wyszukiwarkę albo link z innej strony,</li>
@@ -213,8 +231,7 @@ const statystyki = Boolean(firma.tagGoogle);
             <p>
               Twoją decyzję – zgodę albo odmowę – strona zapamiętuje w pamięci przeglądarki na 12 miesięcy,
               żeby nie pytać przy każdej wizycie. Zmienisz ją w każdej chwili przyciskiem „Ustawienia cookies”
-              w stopce. Po cofnięciu zgody strona usuwa pliki cookies Google Analytics i przestaje wysyłać
-              dane.
+              w stopce.
             </p>
           </>
         ) : (

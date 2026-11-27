@@ -34,10 +34,18 @@ export const firma = {
 
   /**
    * Identyfikator tagu Google (statystyki Google Analytics), np. "GTM-XXXXXXXX".
-   * Tag wczytuje się dopiero po zgodzie odwiedzającego – patrz src/components/Zgoda.astro.
-   * Pusty = strona bez statystyk, bez belki zgody i bez plików cookies.
+   * Tag jest w nagłówku każdej strony (src/components/TagGoogle.astro), a o tym, co mierzy,
+   * decyduje belka cookies (src/components/Zgoda.astro).
+   * Pusty = strona bez statystyk, bez belki cookies i bez plików cookies.
    */
   tagGoogle: 'GTM-MX95F8RT',
+
+  /**
+   * Identyfikator pomiaru Google Analytics ("G-..."), do którego tag wysyła dane.
+   * Potrzebny, żeby po kliknięciu "Odrzucam" wyłączyć pomiar całkowicie.
+   * W Google Analytics: Administracja → Strumienie danych → strumień strony.
+   */
+  pomiarGoogle: 'G-NMMSC7BZZY',
 
   // Administrator danych – widoczny tylko w polityce prywatności.
   // NIP pokazuje się w polityce prywatności i w stopce.
@@ -64,6 +72,9 @@ export const firma = {
     wojewodztwa: ['dolnośląskie', 'lubuskie', 'wielkopolskie'],
   },
 } as const;
+
+/** Pod tą nazwą przeglądarka pamięta decyzję z belki cookies. */
+export const kluczZgody = 'czujka24-zgoda';
 
 export const nawigacja = [
   { href: 'szkolenia/', etykieta: 'Szkolenia' },

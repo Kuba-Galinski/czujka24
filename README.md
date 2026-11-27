@@ -78,10 +78,15 @@ Workflow sam pobiera adres strony z ustawień Pages, więc w kodzie nie ma nic d
 - Kierunek: „rzut i sufit” – chłodna biel sufitu, granat munduru, czerwień wozu strażackiego
   tylko dla alarmu i głównego przycisku. Okrąg jest zarezerwowany dla czujki.
 - Kroje: Sofia Sans Condensed (nagłówki) i Sofia Sans (tekst), hostowane lokalnie – bez Google Fonts.
-- Bez reklam. Jedyny zewnętrzny skrypt to tag Google (statystyki Google Analytics) – wczytuje się
-  dopiero po zgodzie na belce na dole strony i tylko pod domeną `czujka24.pl`
-  (`src/components/Zgoda.astro`, identyfikator `tagGoogle` w `src/config.ts`; pusty wyłącza statystyki).
-  Bez zgody strona nie zapisuje cookies i nie łączy się z Google.
+- Bez reklam. Jedyny zewnętrzny skrypt to tag Google (statystyki Google Analytics) w nagłówku każdej
+  strony (`src/components/TagGoogle.astro`). O zakresie pomiaru decyduje belka cookies na dole strony
+  (`src/components/Zgoda.astro`):
+  - brak decyzji – pomiar uproszczony, bez plików cookies,
+  - „Akceptuję” – pełne statystyki z plikami cookies,
+  - „Odrzucam” – pomiar wyłączony całkowicie, pliki cookies usunięte.
+
+  Poza domeną `czujka24.pl` (podgląd lokalny) pomiar jest wyłączony. Identyfikatory `tagGoogle`
+  i `pomiarGoogle` są w `src/config.ts`; pusty `tagGoogle` usuwa tag i belkę.
 
 Przy projektowaniu użyto skilli Claude Code `frontend-design` oraz
 [`ui-ux-pro-max`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill). Drugi z nich instaluje się
