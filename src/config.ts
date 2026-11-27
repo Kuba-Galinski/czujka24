@@ -47,6 +47,12 @@ export const firma = {
    */
   pomiarGoogle: 'G-NMMSC7BZZY',
 
+  /**
+   * Kod weryfikacji własności strony w Google Search Console (metatag na każdej stronie).
+   * Publiczny z założenia. Nie usuwaj – bez niego Search Console traci dostęp do danych strony.
+   */
+  weryfikacjaGoogle: '0HfCDBWZ3hZKVpo8FYieh9o6WoY694r7lQfTrp_AlC0',
+
   // Administrator danych – widoczny tylko w polityce prywatności.
   // NIP pokazuje się w polityce prywatności i w stopce.
   administrator: {

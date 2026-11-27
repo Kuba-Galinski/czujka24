@@ -51,6 +51,8 @@ Opcjonalnie do uzupełnienia w `src/config.ts`: profil Messengera.
 - Pytania i odpowiedzi na stronie głównej to lista `faq` w `src/pages/index.astro`.
 - Strona błędu 404 ma `indeksuj={false}` i nie trafia do wyszukiwarek ani do mapy strony.
 - Po wdrożeniu wynik można sprawdzić w <https://search.google.com/test/rich-results>.
+- Strona jest dodana do Google Search Console jako `https://czujka24.pl/`. Własność potwierdza metatag
+  `google-site-verification` (kod w `weryfikacjaGoogle` w `src/config.ts`) – nie należy go usuwać.
 
 ## Wdrożenie
 

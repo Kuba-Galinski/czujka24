@@ -41,6 +41,7 @@ const obrazOgOpis = `${firma.marka} – czujki dymu i czadu z montażem, szkolen
       name="robots"
       content={widoczna ? 'index, follow, max-image-preview:large, max-snippet:-1' : 'noindex, nofollow'}
     />
+    {firma.weryfikacjaGoogle && <meta name="google-site-verification" content={firma.weryfikacjaGoogle} />}
     <link rel="icon" type="image/svg+xml" href={adres('favicon.svg')} />
     <meta name="theme-color" content="#14304e" />
 
